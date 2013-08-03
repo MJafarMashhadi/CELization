@@ -1,0 +1,364 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package celizationserver.swing;
+
+import celization.GameParameters;
+import celization.GameState;
+import celization.NaturalResources;
+import celization.UserInfo;
+import celization.civilians.Worker;
+import celizationserver.core.ManagerStarter;
+
+/**
+ *
+ * @author mjafar
+ */
+public class UserInfoForm extends javax.swing.JDialog {
+
+    private String username;
+    private javax.swing.table.DefaultTableModel buildingsModel;
+    private javax.swing.table.DefaultTableModel civiliansModel;
+
+    /**
+     * Creates new form UserInfoForm
+     */
+    public UserInfoForm(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        buildingsModel = new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+            "Type", "Location", "Building phase"
+        }) {
+            @Override
+            public Class getColumnClass(int columnIndex) {
+                return String.class;
+            }
+
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        };
+
+        civiliansModel = new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+            "Name", "Type", "State", "Age"
+        }) {
+            @Override
+            public Class getColumnClass(int columnIndex) {
+                if (columnIndex == 3) {
+                    return Integer.class;
+                }
+                return String.class;
+            }
+
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        };
+
+        initComponents();
+        ManagerStarter.setCenter(this);
+    }
+
+    @SuppressWarnings("empty-statement")
+    public void setUserInfo(UserInfo info) {
+        username = info.getUsername();
+        final GameState game = info.getGame();
+        final GameParameters parameters = game.getParams();
+        final NaturalResources naturalResources = game.getNaturalResources();
+        // Username
+        lblUsername.setText(username);
+        // Turn number
+        lblTurn.setText(String.format("%02d", game.getTurnNumber()));
+        // resources
+        int gold, maxGold;
+        int stone, maxStone;
+        int lumber, maxLumber;
+        int food, maxFood;
+
+        maxGold = parameters.goldCapacity;
+        maxStone = parameters.stoneCapacity;
+        maxLumber = parameters.woodCapacity;
+        maxFood = parameters.foodCapacity;
+
+        gold = naturalResources.numberOfGolds;
+        stone = naturalResources.numberOfStones;
+        lumber = naturalResources.numberOfWoods;
+        food = naturalResources.numberOfFood;
+
+        prgGold.setMaximum(maxGold);
+        prgGold.setValue(gold);
+        prgGold.setString(String.format("%3d / %3d", gold, maxGold));
+        prgStone.setMaximum(maxStone);
+        prgStone.setValue(stone);
+        prgStone.setString(String.format("%3d / %3d", stone, maxStone));
+        prgLumber.setMaximum(maxLumber);
+        prgLumber.setValue(lumber);
+        prgLumber.setString(String.format("%3d / %3d", lumber, maxLumber));
+        prgFood.setMaximum(maxFood);
+        prgFood.setValue(food);
+        prgFood.setString(String.format("%3d / %3d", food, maxFood));
+
+        Object[] dataRow;
+        // Buildings
+        dataRow = new Object[3];
+        if (!game.getBuildings().values().isEmpty()) {
+            for (celization.buildings.Building building : game.getBuildings().values()) {
+                dataRow[0] = building.getClass().getSimpleName();
+                dataRow[1] = building.getLocation().toString();
+                dataRow[2] = String.format("%.2f / %.2f", building.getBuildingPhase(), building.getETA());
+
+                buildingsModel.addRow(dataRow);
+            }
+        }
+
+        // Civilians
+        dataRow = new Object[4];
+        if (!game.getCivilians().values().isEmpty()) {
+            for (celization.civilians.Civilian civilian : game.getCivilians().values()) {
+
+                dataRow[0] = civilian.getName();
+                dataRow[1] = civilian.getClass().getSimpleName();
+                if (civilian.stillAlive()) {
+                    dataRow[2] = "Alive";
+                } else {
+                    dataRow[2] = "Dead";
+                }
+                if (civilian instanceof Worker) {
+                    dataRow[2] = dataRow[2] + String.valueOf(((Worker) civilian).workState);
+                }
+                dataRow[3] = String.format("%d / %d", civilian.getAge(), civilian.getETA());
+
+                civiliansModel.addRow(dataRow);
+            }
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        lblInfoDesc = new javax.swing.JLabel();
+        lblUsername = new javax.swing.JLabel();
+        pnlResouces = new javax.swing.JPanel();
+        lblGold = new javax.swing.JLabel();
+        lblLumber = new javax.swing.JLabel();
+        lblStone = new javax.swing.JLabel();
+        lblFood = new javax.swing.JLabel();
+        prgGold = new javax.swing.JProgressBar();
+        prgLumber = new javax.swing.JProgressBar();
+        prgStone = new javax.swing.JProgressBar();
+        prgFood = new javax.swing.JProgressBar();
+        lblKnowledgeDesc = new javax.swing.JLabel();
+        lblKnowledge = new javax.swing.JLabel();
+        lblTurn = new javax.swing.JLabel();
+        pnlPeopleAndBuildings = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblBuildings = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblCivilians = new javax.swing.JTable();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("User info");
+
+        lblInfoDesc.setText("User information ");
+
+        lblUsername.setFont(new java.awt.Font("Cantarell", 1, 13)); // NOI18N
+        lblUsername.setText("USERNAME");
+
+        pnlResouces.setBorder(javax.swing.BorderFactory.createTitledBorder("Resources"));
+
+        lblGold.setText("Gold");
+
+        lblLumber.setText("Lumber");
+
+        lblStone.setText("Stone");
+
+        lblFood.setText("Food");
+
+        prgGold.setMaximum(200);
+        prgGold.setValue(50);
+        prgGold.setString("");
+        prgGold.setStringPainted(true);
+
+        prgLumber.setMaximum(200);
+        prgLumber.setValue(50);
+        prgLumber.setString("");
+        prgLumber.setStringPainted(true);
+
+        prgStone.setMaximum(200);
+        prgStone.setValue(50);
+        prgStone.setString("");
+        prgStone.setStringPainted(true);
+
+        prgFood.setMaximum(200);
+        prgFood.setValue(50);
+        prgFood.setString("");
+        prgFood.setStringPainted(true);
+
+        lblKnowledgeDesc.setText("Knowledge");
+
+        lblKnowledge.setText("0");
+
+        javax.swing.GroupLayout pnlResoucesLayout = new javax.swing.GroupLayout(pnlResouces);
+        pnlResouces.setLayout(pnlResoucesLayout);
+        pnlResoucesLayout.setHorizontalGroup(
+            pnlResoucesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlResoucesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlResoucesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlResoucesLayout.createSequentialGroup()
+                        .addComponent(lblFood, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(9, 9, 9))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlResoucesLayout.createSequentialGroup()
+                        .addComponent(lblStone, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(pnlResoucesLayout.createSequentialGroup()
+                        .addComponent(lblLumber, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(pnlResoucesLayout.createSequentialGroup()
+                        .addComponent(lblKnowledgeDesc)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pnlResoucesLayout.createSequentialGroup()
+                        .addComponent(lblGold, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(pnlResoucesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(prgGold, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
+                    .addComponent(lblKnowledge)
+                    .addComponent(prgStone, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(prgLumber, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(prgFood, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        pnlResoucesLayout.setVerticalGroup(
+            pnlResoucesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlResoucesLayout.createSequentialGroup()
+                .addGroup(pnlResoucesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(prgGold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblGold))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlResoucesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(prgLumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblLumber))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlResoucesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(prgStone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblStone))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlResoucesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(prgFood, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblFood))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlResoucesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblKnowledge)
+                    .addComponent(lblKnowledgeDesc))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        lblTurn.setText("00");
+        lblTurn.setToolTipText("Player's turn");
+
+        pnlPeopleAndBuildings.setBorder(javax.swing.BorderFactory.createTitledBorder("Civilizational resources"));
+
+        tblBuildings.setModel(buildingsModel);
+        tblBuildings.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tblBuildings);
+        tblBuildings.getColumnModel().getColumn(0).setResizable(false);
+        tblBuildings.getColumnModel().getColumn(1).setResizable(false);
+        tblBuildings.getColumnModel().getColumn(2).setResizable(false);
+
+        tblCivilians.setModel(civiliansModel);
+        tblCivilians.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(tblCivilians);
+        tblCivilians.getColumnModel().getColumn(0).setResizable(false);
+        tblCivilians.getColumnModel().getColumn(1).setResizable(false);
+        tblCivilians.getColumnModel().getColumn(2).setResizable(false);
+        tblCivilians.getColumnModel().getColumn(3).setResizable(false);
+
+        javax.swing.GroupLayout pnlPeopleAndBuildingsLayout = new javax.swing.GroupLayout(pnlPeopleAndBuildings);
+        pnlPeopleAndBuildings.setLayout(pnlPeopleAndBuildingsLayout);
+        pnlPeopleAndBuildingsLayout.setHorizontalGroup(
+            pnlPeopleAndBuildingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPeopleAndBuildingsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        pnlPeopleAndBuildingsLayout.setVerticalGroup(
+            pnlPeopleAndBuildingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPeopleAndBuildingsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlPeopleAndBuildingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(lblInfoDesc)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblUsername, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblTurn))
+                    .addComponent(pnlPeopleAndBuildings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlResouces, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblInfoDesc)
+                    .addComponent(lblUsername)
+                    .addComponent(lblTurn))
+                .addGap(18, 18, 18)
+                .addComponent(pnlResouces, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(pnlPeopleAndBuildings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblFood;
+    private javax.swing.JLabel lblGold;
+    private javax.swing.JLabel lblInfoDesc;
+    private javax.swing.JLabel lblKnowledge;
+    private javax.swing.JLabel lblKnowledgeDesc;
+    private javax.swing.JLabel lblLumber;
+    private javax.swing.JLabel lblStone;
+    private javax.swing.JLabel lblTurn;
+    private javax.swing.JLabel lblUsername;
+    private javax.swing.JPanel pnlPeopleAndBuildings;
+    private javax.swing.JPanel pnlResouces;
+    private javax.swing.JProgressBar prgFood;
+    private javax.swing.JProgressBar prgGold;
+    private javax.swing.JProgressBar prgLumber;
+    private javax.swing.JProgressBar prgStone;
+    private javax.swing.JTable tblBuildings;
+    private javax.swing.JTable tblCivilians;
+    // End of variables declaration//GEN-END:variables
+}

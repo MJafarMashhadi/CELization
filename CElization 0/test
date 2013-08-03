@@ -1,0 +1,168 @@
+action judge building 2 32 70
+action derp move 31 69
+action judge building 1 33 84
+action UNIVERSITY research 1
+next
+action UNIVERSITY research 2
+next 
+next
+action UNIVERSITY research 3
+next
+next
+action UNIVERSITY train
+next
+next
+next
+next
+next
+next
+action UNIVERSITY train
+next
+next
+next
+next
+next
+next
+action judge set gold 200
+action judge set food 200
+action UNIVERSITY research 4
+next
+next
+action UNIVERSITY research 19
+next
+next
+action UNIVERSITY research 5
+next
+next
+next
+next
+next
+next
+next
+next
+action UNIVERSITY research 20
+next
+next
+next
+next
+next
+next
+action UNIVERSITY train
+next
+next
+next
+next
+next
+action HEADQUARTERS train
+action UNIVERSITY train
+next
+next
+next
+next
+next
+next
+action judge move derp 91 80
+action judge explore all
+action judge set gold 200
+action judge set stone 200
+action judge set lumber 200
+action UNIVERSITY research 10
+next
+next
+next
+next
+action judge set food 200
+action judge set knowledge 1000
+action UNIVERSITY research 11
+next
+next
+next
+next
+next
+next
+action judge set food 200
+next
+next
+next
+next
+action UNIVERSITY research 15
+next
+next
+next
+next
+next
+next
+next
+next
+next
+next
+action judge set gold 200
+action UNIVERSITY research 16
+next
+next
+next
+next
+next
+action judge set food 200
+next
+next
+next
+next
+next
+next
+next
+action derp build 8 92 80
+action judge building 9 37 2
+next
+next
+next
+next
+next
+next
+action judge set food 200
+next
+next
+next
+next
+next
+next
+next
+next
+next
+action judge set food 200
+next
+next
+next
+next
+next
+action judge set food 200
+action PORT-1 train
+next
+next
+next
+next
+next
+next
+next
+next
+action judge move derp 89 22
+action judge set lumber 200
+action judge set stone 200
+action judge set gold 190
+action derp build 7 90 23
+next
+next
+next
+next
+next
+next
+next
+next
+next
+next
+next
+next
+next
+next
+next
+info

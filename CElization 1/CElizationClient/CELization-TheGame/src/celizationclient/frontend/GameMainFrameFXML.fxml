@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import celizationclient.frontend.*?>
+<?import celizationclient.frontend.MapContainer?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?scenebuilder-classpath-element ../../../dist/CELization-TheGame.jar?>
+<?scenebuilder-classpath-element ../../../../../CElizationCore/dist/CElizationCore.jar?>
+
+<BorderPane prefHeight="717.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="celizationclient.frontend.GameMainFrameController">
+  <bottom>
+    <GridPane hgap="15.0" maxHeight="-Infinity" prefHeight="-1.0" prefWidth="1024.0" style="-fx-background-image: url(&quot;CoarseGrid.png&quot;);&#10;-fx-background-repeat: repeat;&#10;-fx-background-color: linear-gradient(#222222, #666666);&#10;" vgap="1.0">
+      <children>
+        <Label fx:id="lblSelectedUnitInfo" text="Unit Actions" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="0">
+          <font>
+            <Font name="System Bold" size="12.0" fx:id="x7" />
+          </font>
+        </Label>
+        <Label font="$x7" text="Turn Actions Queue" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <TabPane fx:id="actionsTabs" prefHeight="134.0" prefWidth="332.0" rotateGraphic="false" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="1.7976931348623157E308" tabMinHeight="0.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+          <tabs>
+            <Tab text="NA">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="115.0" prefWidth="332.0">
+                  <children>
+                    <Text fill="#d633ff" layoutX="70.0" layoutY="48.0" opacity="0.76" rotate="346.0" stroke="#8f00ff" strokeLineCap="BUTT" strokeLineJoin="ROUND" strokeMiterLimit="5.6" strokeType="OUTSIDE" strokeWidth="1.0" text="Please select a unit">
+                      <font>
+                        <Font name="Arial Black" size="17.0" />
+                      </font>
+                    </Text>
+                  </children>
+                </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="worker">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <HBox id="HBox" alignment="CENTER" layoutX="85.0" layoutY="31.0" spacing="5.0">
+                      <children>
+                        <Button fx:id="btnWorkerMove" mnemonicParsing="false" text="Move" />
+                        <Button fx:id="btnWorkerWork" mnemonicParsing="false" text="Work" />
+                        <Button fx:id="btnWorkerBuild" mnemonicParsing="false" text="Build" />
+                      </children>
+                    </HBox>
+                  </children>
+                </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="soldier">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <HBox id="HBox" alignment="CENTER" layoutX="113.0" layoutY="31.0" spacing="5.0">
+                      <children>
+                        <Button fx:id="btnSoldierMove" mnemonicParsing="false" text="move" />
+                        <Button fx:id="btnSoldierFight" mnemonicParsing="false" text="fight" />
+                      </children>
+                    </HBox>
+                  </children>
+                </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="hq">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <HBox id="HBox" alignment="CENTER" layoutX="117.0" layoutY="31.0" spacing="5.0">
+                      <children>
+                        <Button fx:id="btnHQTrain" mnemonicParsing="false" text="Train" />
+                        <Button fx:id="btnHQSell" mnemonicParsing="false" onAction="#btnHQSellClicked" text="Sell" />
+                      </children>
+                    </HBox>
+                  </children>
+                </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="university">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <HBox id="HBox" alignment="CENTER" layoutX="81.0" layoutY="31.0" spacing="5.0">
+                      <children>
+                        <Button fx:id="btnUniversityTrain" mnemonicParsing="false" text="Train" />
+                        <Button fx:id="btnUniversityResearch" mnemonicParsing="false" onAction="#btnUniversityResearchClick" text="Research" />
+                        <Button fx:id="btnUniversitySell" mnemonicParsing="false" onAction="#btnUniversitySellClicked" text="Sell" />
+                      </children>
+                    </HBox>
+                  </children>
+                </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="stable">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <HBox id="HBox" alignment="CENTER" layoutX="69.0" layoutY="18.0" spacing="5.0">
+                      <children>
+                        <VBox id="VBox" alignment="CENTER" spacing="5.0">
+                          <children>
+                            <Button fx:id="btnStableTrainJockey" mnemonicParsing="false" text="Train Jockey Horseman" />
+                            <Button fx:id="btnStableTrainMace" mnemonicParsing="false" text="Train  Mace Horseman" />
+                          </children>
+                        </VBox>
+                        <Button fx:id="btnStableSell" mnemonicParsing="false" onAction="#btnStableSellClicked" text="Sell" />
+                      </children>
+                    </HBox>
+                  </children>
+                </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="barracks">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="106.0" prefWidth="332.0">
+                  <children>
+                    <HBox id="HBox" alignment="CENTER" layoutX="75.0" layoutY="18.0" spacing="5.0">
+                      <children>
+                        <VBox id="VBox" alignment="CENTER" spacing="5.0">
+                          <children>
+                            <Button fx:id="btnBarracksSpear" mnemonicParsing="false" text="Train Spear Infantry" />
+                            <Button fx:id="btnBarracksSapper" mnemonicParsing="false" text="Train Sapper Infantry" />
+                          </children>
+                        </VBox>
+                        <Button fx:id="btnBarracksSell" mnemonicParsing="false" onAction="#btnBarracksSellClicked" text="Sell" />
+                      </children>
+                    </HBox>
+                  </children>
+                </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="market">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <HBox id="HBox" alignment="CENTER" layoutX="14.0" layoutY="9.0" spacing="5.0">
+                      <children>
+                        <VBox id="VBox" alignment="CENTER" spacing="5.0">
+                          <children>
+                            <TextField fx:id="txtTransferAmount" prefWidth="100.0" promptText="Transfer Amount" text="" />
+                            <HBox id="HBox" alignment="CENTER" spacing="5.0">
+                              <children>
+                                <ChoiceBox fx:id="choiceFrom">
+                                  <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                      <String fx:value="Gold" />
+                                      <String fx:value="Stone" />
+                                      <String fx:value="Food" />
+                                      <String fx:value="Lumber" />
+                                    </FXCollections>
+                                  </items>
+                                </ChoiceBox>
+                                <Label text="to" />
+                                <ChoiceBox fx:id="choiceTo">
+                                  <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                      <String fx:value="Gold" />
+                                      <String fx:value="Stone" />
+                                      <String fx:value="Food" />
+                                      <String fx:value="Lumber" />
+                                    </FXCollections>
+                                  </items>
+                                </ChoiceBox>
+                              </children>
+                            </HBox>
+                            <Button fx:id="btnConvert" mnemonicParsing="false" onAction="#btnConvertClicked" text="Convert" />
+                          </children>
+                        </VBox>
+                        <Button fx:id="btnMarketSell" mnemonicParsing="false" onAction="#btnMarketSellClicked" text="Sell" />
+                      </children>
+                    </HBox>
+                  </children>
+                </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="storage">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="106.0" prefWidth="332.0">
+                  <children>
+                    <Button fx:id="btnStorageSell" layoutX="143.0" layoutY="31.0" mnemonicParsing="false" onAction="#btnStorageSellClicked" text="Sell" />
+                  </children>
+                </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="port">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <VBox id="VBox" alignment="CENTER" layoutX="107.0" layoutY="18.0" spacing="5.0">
+                      <children>
+                        <Button fx:id="btnBuildBoat" mnemonicParsing="false" onAction="#btnBuildBoatClicked" text="Build a New Boat" />
+                        <Button fx:id="btnPortSell" mnemonicParsing="false" onAction="#btnPortSellClicked" text="Sell" />
+                      </children>
+                    </VBox>
+                  </children>
+                </AnchorPane>
+              </content>
+            </Tab>
+          </tabs>
+        </TabPane>
+        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+          <children>
+            <ListView fx:id="lstTurnActions" editable="false" prefHeight="-1.0" prefWidth="-1.0">
+              <rotationAxis>
+                <Point3D z="1.0" />
+              </rotationAxis>
+            </ListView>
+            <Button cancelButton="false" mnemonicParsing="false" onAction="#cancelAction" text="Cancel selected Job" />
+          </children>
+          <padding>
+            <Insets />
+          </padding>
+        </VBox>
+        <Button fx:id="btnNextTurn" defaultButton="true" mnemonicParsing="false" onAction="#nextTurn" prefHeight="59.0" prefWidth="94.0" text="Next Turn" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+          <font>
+            <Font name="System Bold" size="13.0" />
+          </font>
+        </Button>
+      </children>
+      <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" maxWidth="437.0" minWidth="10.0" prefWidth="332.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="479.0" minWidth="10.0" prefWidth="462.0" />
+        <ColumnConstraints hgrow="ALWAYS" maxWidth="452.0" minWidth="10.0" prefWidth="180.0" />
+      </columnConstraints>
+      <padding>
+        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+      </padding>
+      <rowConstraints>
+        <RowConstraints maxHeight="66.0" minHeight="10.0" prefHeight="27.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="121.0" minHeight="10.0" prefHeight="106.0" vgrow="NEVER" />
+      </rowConstraints>
+      <BorderPane.margin>
+        <Insets />
+      </BorderPane.margin>
+    </GridPane>
+  </bottom>
+  <center>
+    <TabPane prefHeight="500.0" prefWidth="806.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+      <tabs>
+        <Tab text="Map">
+          <content>
+            <AnchorPane id="Content" fx:id="mapPane" minHeight="-1.0" minWidth="-1.0" prefHeight="500.0" prefWidth="1024.0">
+              <children>
+                <ScrollPane id="ScrollPane" fitToHeight="false" fitToWidth="false" hbarPolicy="NEVER" pannable="true" prefHeight="492.0" prefViewportHeight="0.0" prefViewportWidth="0.0" prefWidth="824.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <content>
+                    <MapContainer fx:id="mapPreviewPane" style="-fx-background-color: #111111;" />
+                  </content>
+                </ScrollPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="Game Info">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <Accordion pickOnBounds="true" prefHeight="469.0" prefWidth="824.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <expandedPane>
+                    <TitledPane fx:id="x10" animated="false" expanded="true" text="Turn Events">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                          <children>
+                            <Text layoutX="14.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Events Occured in Last Turn">
+                              <effect>
+                                <InnerShadow choke="0.2" height="8.904761904761905" radius="3.9523809523809526" width="8.904761904761905">
+                                  <color>
+                                    <Color blue="0.000" green="0.000" opacity="0.573" red="0.000" fx:id="x11" />
+                                  </color>
+                                </InnerShadow>
+                              </effect>
+                              <fill>
+                                <Color blue="0.624" green="0.624" red="0.624" fx:id="x3" />
+                              </fill>
+                              <font>
+                                <Font name="Arial Black" size="25.0" fx:id="x9" />
+                              </font>
+                            </Text>
+                            <ListView fx:id="lstTurnEvents" prefHeight="326.0" prefWidth="804.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="59.0" />
+                          </children>
+                        </AnchorPane>
+                      </content>
+                    </TitledPane>
+                  </expandedPane>
+                  <panes>
+                    <TitledPane fx:id="x2" animated="false" text="Resources">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                          <children>
+                            <Text fill="$x3" font="$x9" layoutX="14.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Storages Statistics">
+                              <effect>
+                                <InnerShadow choke="0.2" color="$x11" height="8.904761904761905" radius="3.9523809523809526" width="8.904761904761905" />
+                              </effect>
+                            </Text>
+                            <GridPane layoutX="14.0" layoutY="61.0" prefWidth="576.0">
+                              <children>
+                                <Label text="Gold" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <Label text="Stone" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <Label text="Lumber" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <Label text="Food" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <Label text="Knowledge" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <ProgressBar fx:id="prgGold" prefHeight="22.0" prefWidth="375.0" progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                  <effect>
+                                    <DropShadow color="#66c8ff55" fx:id="x1" />
+                                  </effect>
+                                </ProgressBar>
+                                <ProgressBar fx:id="prgStone" effect="$x1" prefHeight="22.0" prefWidth="375.0" progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <ProgressBar fx:id="prgLumber" effect="$x1" prefHeight="22.0" prefWidth="375.0" progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <ProgressBar fx:id="prgFood" effect="$x1" prefHeight="22.0" prefWidth="375.0" progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                <Label fx:id="lblKnowledge" effect="$x1" text="0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              </children>
+                              <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="287.0" minWidth="10.0" prefWidth="193.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="439.0" minWidth="10.0" prefWidth="383.0" />
+                              </columnConstraints>
+                              <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              </rowConstraints>
+                            </GridPane>
+                            <Text fill="$x3" font="$x9" layoutX="14.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Extraction Estimates">
+                              <effect>
+                                <InnerShadow choke="0.2" color="$x11" height="8.904761904761905" radius="3.9523809523809526" width="8.904761904761905" />
+                              </effect>
+                            </Text>
+                            <GridPane layoutX="14.0" layoutY="247.0" prefWidth="576.0">
+                              <children>
+                                <Label text="Gold" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <Label text="Stone" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <Label text="Lumber" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <Label text="Food" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <Label text="Knowledge" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <Label fx:id="lblGoldsExtraction" effect="$x1" text="0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                <Label fx:id="lblStoneExtraction" effect="$x1" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <Label fx:id="lblLumberExtraction" effect="$x1" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                  <children>
+                                    <Label fx:id="lblFoodExtraction" effect="$x1" text="0" />
+                                    <Label fx:id="lblFoodConsumption" effect="$x1" text="-2" />
+                                  </children>
+                                </HBox>
+                                <Label fx:id="lblKnowledgeGeneration" effect="$x1" text="0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              </children>
+                              <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="287.0" minWidth="10.0" prefWidth="193.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="439.0" minWidth="10.0" prefWidth="383.0" />
+                              </columnConstraints>
+                              <rowConstraints>
+                                <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              </rowConstraints>
+                            </GridPane>
+                          </children>
+                        </AnchorPane>
+                      </content>
+                    </TitledPane>
+                    <TitledPane fx:id="x6" animated="false" text="Researches">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                          <children>
+                            <Text fill="$x3" font="$x9" layoutX="14.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Available Researches">
+                              <effect>
+                                <InnerShadow choke="0.2" color="$x11" height="8.904761904761905" radius="3.9523809523809526" width="8.904761904761905" />
+                              </effect>
+                            </Text>
+                            <ListView id="researchesTree" fx:id="lstResearches" prefHeight="345.0" prefWidth="782.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="62.0" />
+                          </children>
+                        </AnchorPane>
+                      </content>
+                    </TitledPane>
+                    <fx:reference source="x10" />
+                  </panes>
+                </Accordion>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPane>
+  </center>
+  <right>
+    <TabPane fx:id="chatTabs" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="500.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+      <tabs>
+        <Tab text="Online Users">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <ListView fx:id="lstOnlineUsers" onMouseClicked="#openNewChatTab" prefHeight="469.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPane>
+  </right>
+  <top>
+    <GridPane gridLinesVisible="false" maxHeight="-Infinity" maxWidth="-1.0" opacity="1.0" prefHeight="40.0" prefWidth="1024.0" style="-fx-background-color: linear-gradient(#666666, #222222);">
+      <children>
+        <Text fx:id="CELizationLogo" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: whitesmoke;" text="CELization" textAlignment="LEFT" x="0.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+          <effect>
+            <Glow level="0.530188679245283" />
+          </effect>
+          <font>
+            <Font name="Arial Bold Italic" size="25.0" />
+          </font>
+          <GridPane.margin>
+            <Insets left="20.0" />
+          </GridPane.margin>
+        </Text>
+        <ToggleButton alignment="CENTER_RIGHT" contentDisplay="GRAPHIC_ONLY" depthTest="INHERIT" graphicTextGap="0.0" minWidth="25.0" mnemonicParsing="false" mouseTransparent="false" onAction="#toggleChatPane" prefHeight="29.0" prefWidth="36.0" rotate="0.0" selected="true" text="" textAlignment="LEFT" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+          <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0">
+              <Image url="@Chat.png" />
+            </ImageView>
+          </graphic>
+          <GridPane.margin>
+            <Insets right="20.0" />
+          </GridPane.margin>
+        </ToggleButton>
+        <Label fx:id="lblChatMessages" contentDisplay="CENTER" font="$x7" prefWidth="-1.0" style="" text="0" textAlignment="CENTER" textFill="#ececec" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="0">
+          <effect>
+            <DropShadow color="RED" height="25.490964859250997" radius="12.245482429625499" spread="0.9317460317460318" width="25.490964859250997">
+              <input>
+                <Glow level="0.37" />
+              </input>
+            </DropShadow>
+          </effect>
+        </Label>
+      </children>
+      <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" maxWidth="861.0" minWidth="10.0" prefWidth="861.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="633.0" minWidth="10.0" prefWidth="80.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="340.0" minWidth="10.0" prefWidth="83.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+  </top>
+</BorderPane>

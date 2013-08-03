@@ -1,0 +1,304 @@
+
+<!-- saved from url=(0078)http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Unit Testing in Eclipse Using JUnit</title>
+
+<link href="./Unit Testing in Eclipse Using JUnit_files/tutorial.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+.style1 {font-size: 12px}
+-->
+</style>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" class="mainText">
+<p class="pageTitle"><a name="anchor"></a><span class="title">Unit Testing in Eclipse Using JUnit</span></p>
+<hr align="left" width="765">
+<table width="765" border="0" cellspacing="0" cellpadding="0">
+  <tbody><tr>
+    <td><p class="body">Laurie Williams, Dright Ho, Ben Smith and Sarah Heckman [<a href="mailto:se_tutorials@lists.ncsu.edu?subject=CSC326%20Lab%20Tutorials%20-%20Junit-Eclipse">Contact Authors</a>]<br>
+        <a href="http://courses.ncsu.edu/csc326/">CSC 326</a> - Software Engineering <br>
+        <a href="http://www.csc.ncsu.edu/">Department of Computer Science</a> <br>
+        <a href="http://www.ncsu.edu/">North Carolina State University</a></p>
+        <p class="body"><a href="http://realsearchgroup.org/SEMaterials/tutorials/" class="body">Back to Software Engineering Tutorials</a></p></td>
+    <td><div align="right"><a href="http://openseminar.org/se"><img src="./Unit Testing in Eclipse Using JUnit_files/OS_SE_Logo.gif" width="200" height="73" border="0"></a></div></td>
+  </tr>
+</tbody></table>
+<hr align="left" width="765">
+<a name="section0_0" id="section0_0"></a><span class="title">0.0 Contents</span>
+<table width="765" border="0" cellspacing="0" cellpadding="5">
+  <tbody><tr class="body">
+    <td width="28">1.0</td>
+    <td width="717"><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section1_0">Introduction to JUnit</a> </td>
+  </tr>
+  <tr class="body">
+    <td>2.0</td>
+    <td><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section2_0">Creating a Test Class</a> </td>
+  </tr>
+  <tr class="body">
+    <td>3.0</td>
+    <td><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section3_0">Creating a Test Suite</a> </td>
+  </tr>
+  <tr class="body">
+    <td>4.0</td>
+    <td><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section4_0">Running JUnit Test Cases</a> </td>
+  </tr>
+  <tr class="body">
+    <td>5.0</td>
+    <td><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section6_0">Assertion Statement Reference</a> </td>
+  </tr>
+  <tr class="body">
+    <td>6.0</td>
+    <td><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section7_0">Exercise</a></td>
+  </tr>
+  <tr class="body">
+    <td>7.0</td>
+    <td><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section8_0">Resources</a></td>
+  </tr>
+</tbody></table>
+<hr align="left" width="765">
+<a name="section1_0" id="section1_0"></a><span class="title">1.0 Introduction to JUnit</span>
+<table width="765" border="0" cellspacing="0" cellpadding="5">
+  <tbody><tr>
+    <td><p class="body">Eclipse v. 3.1comes with JUnit built into the Workbench. Eclipse allows you to quickly create test case classes and test suite classes to write your test code in. With Eclipse, Test Driven Development (TDD), becomes very easy to organize and implement.</p>
+      <p class="body">The class that you will want to test is created first so that Eclipse will be able to find that class under test when you build the test case class. The test cases are built with the needed imports and extensions for JUnit to run. Once the test case class is built the actual test cases are then coded in by the programmer.</p>
+      <p class="body">The creation of test suites in Eclipse is even easier. When you create a test suite, Eclipse will name it for you and will specify all of the test cases in the scope of the project that it can find. The code to run the test suite and to add all of the specified test cases you've created, is added to the test suite for you. </p>
+      <p class="body">Reminder of JUnit Naming Conventions:</p>
+      <ul>
+        <li class="body">Test Case Class: Named [classname]Test.java, where classname is the name of the class that is being tested.</li>
+        <li class="body">Test Case Method: Named test[methodname], where methodname is the name of the method that is tested.</li>
+        <li class="body">Test Suite: Default name for Eclipse is AllTests.java</li>
+      </ul>
+      <p class="body">It is considered a best practice in testing, to separate the test case code from the application code. It is also a good idea to separate your JUnit and FIT tests as well. Here is an example file structure that helps with this:</p>
+      <table width="560" border="0" align="center" cellpadding="5" cellspacing="0">
+        <tbody><tr>
+          <td class="body"><img src="./Unit Testing in Eclipse Using JUnit_files/2_0FileStructure.gif" width="279" height="267"></td>
+          <td><img src="./Unit Testing in Eclipse Using JUnit_files/2_1FileStructure.gif" width="279" height="267"></td>
+        </tr>
+        <tr>
+          <td><div align="center" class="body">File Structure <strong>Before</strong> Adding <em>fit.jar</em> and <em>junit.jar</em> to the Build Path</div></td>
+          <td><div align="center" class="body">File Structure <strong>After</strong> Adding <em>fit.jar</em> and <em>junit.jar</em> to the Build Path</div></td>
+        </tr>
+      </tbody></table>      
+      <p class="body">Most projects that you create will have a <em>src/</em> folder that contain the main application code, a <em>bin/</em> folder that contain the compiled <em>.class </em>files, and a <em>lib/</em> folder that contains jar files that need to be on the project's build path. In order to use FitRunner, <em>fit.jar</em> needs to be on the build path. Since FIT requires the JUnit libraries, <em>junit.jar</em> must also be on the build path.</p>
+      <p class="body">The <em>acctest/spec/</em> folder will contain the specification HTML tables of your FIT acceptance tests, while <em>acctest/result/</em> will contain the HTML tables that show the results of your FIT acceptance tests. It is best to keep a clean file of your test specification so that you can rerun the tests on a clean file. The <em>acctest/fixtures/</em> folder will contain the Java fixtures that run your FIT acceptance tests. The <em>unittests/</em> folder will contain your JUnit test cases. The <em>models/</em> folder may contain your models that are generated in Rational XDE.</p>    
+      <p class="body"><strong>1.1 Putting junit.jar on the Build Path</strong></p>
+      <blockquote>
+      <p class="body">1.1.1 Right click on the project and select <strong>Properties</strong>. In the left column select <strong>Java Build Path</strong>. To the right select the <strong>Libraries</strong> tab. Click the <strong>Add External JARs...</strong> button. You should start off in the Eclipse install directory, otherwise search through the file system until you find the Eclipse install directory.</p>
+      <p class="body">1.1.2 Under the Eclipse install directory select <em>plugins/org.junit_3.8.1/junit.jar</em>. Click <strong>OK</strong>.</p>
+      <p class="body"><strong>OR</strong></p>
+      <p class="body">1.2.1 Download <a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/files/junit.jar"><em>junit.jar</em></a> from here, or from <a href="http://www.junit.org/">www.junit.org</a>. Add<em> junit.jar</em> to your <em>lib/</em> directory in your project. </p>
+      <p class="body">1.2.2 Right click on the project and select <strong>Properties</strong>. In the left column select <strong>Java Build Path</strong>. To the right select the <strong>Libraries</strong> tab. Click the <strong>Add JARs..</strong>. button. Select your project, and go down through the tree until you find <em>junit.jar</em> under the lib folder. Select <em>junit.jar</em> and Click <strong>OK</strong>.</p>
+      <p class="body"><span class="note"><strong>Note</strong>:</span> After you add<em> junit.jar</em> to the build path, it will no longer be displayed in the <em>lib/</em> directory in the Package Explorer view of Eclipse. The jar file is still located in the <em>lib/</em> directory when you explore it from outside of Eclipse, but since it is now on the build path inside of Eclipse, it has its own listing in the project. </p>
+      </blockquote>
+    </td>
+  </tr>
+</tbody></table>
+<span class="body"><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#anchor">Top</a> | <a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section0_0">Contents</a></span><br>
+<hr align="left" width="765">
+<a name="section2_0" id="section2_0"></a><span class="title">2.0 Creating a Test Class</span>
+<table width="765" border="0" cellspacing="0" cellpadding="5">
+  <tbody><tr>
+    <td><p class="body">JUnit convention is that there is a test class created for every application class that does not contain GUI code. Usually all paths through each method in a class are tested in a unit test; however, you do not need to test trivial getter and setter methods. </p>
+      <p class="body">2.1 There are five ways to create a JUnit Test Case Class. First, select the directory (usually <em>unittests/</em>) that you wish to create the test case class in.</p>
+      <blockquote>
+        <p class="body">2.1.1 Select <strong>File &gt; New &gt; JUnit Test Case </strong></p>
+        <p class="body">2.1.2 Select the arrow <img src="./Unit Testing in Eclipse Using JUnit_files/NewProjectIcon.gif" width="36" height="22" align="absmiddle"> of the button in the upper left of the toolbar. Select <strong>JUnit Test Case </strong>,</p>
+        <p class="body">2.1.3 Right click on a package in the Package Explorer view in the Java Perspective, and select <strong>JUnitTestCase</strong>, or</p>
+        <p class="body">2.1.4 Click on the arrow of the <img src="./Unit Testing in Eclipse Using JUnit_files/NewClassInterface.gif" width="36" height="22" align="absmiddle"> icon in the toolbar. Select <strong>JUnit Test Case </strong>.</p>
+        <p class="body">2.1.5 You can create a normal Java class as shown in the Eclipse tutorial, but include <em>junit.framework.TestCase</em> as the super class of the test class you are creating. </p>
+      </blockquote>
+      <p class="body">2.2 Check to make sure that you are creating the TestCase in the proper package. Give the test case a name. </p>
+      <blockquote>
+        <p class="body">2.2.1 Use the <strong>Browse</strong> button to search for a different super class. The default super class is <em>junit.framework.TestCase</em>.</p>
+        <p class="body">2.2.2 Check which method stubs you would like to create. You can create a main method, <span class="body"><em>setUp()</em></span>, <span class="body"><em>tearDown()</em></span>, or a <span class="body"><em>constructor()</em></span>, but all of these are optional. A constructor is only run when the test case class is first instantiated, but the <span class="body"><em>setUp()</em></span> and <em>tearDown()</em> methods are run before and after, respectively, each test case is run. </p>
+        <p class="body">2.2.3. You can browse the application that you are creating for a class that you wish to test, or this could be left blank if you will generate the class while creating while creating the test. </p>
+      </blockquote>
+      <p class="body">2.3 If you selected a "Class Under Test" you can click the <strong>Next</strong> button, otherwise click <strong>Finish</strong>. You will be able to select which methods in the class under test that you want to write test cases for. The method signatures will be created for you. Click <strong>Finish</strong>. The new test case class will be open in the editor. </p>
+      <p class="body">2.4 Below is a test case template from the JUnit FAQ. This test class demonstrates the basic functionality of the <em>setUp()</em> and <em>tearDown()</em> methods, and gives example test cases. The <em>testForException()</em> method demonstrates how to test that an exception is properly thrown. </p>
+      <p class="note style1">Note: All source methods in the class under test must be public or protected, not private, in order to be tested by JUnit. If the method in the class under test is private, the test class must be in the same package. </p>
+      <blockquote>
+        <pre class="code">import junit.framework.TestCase;
+
+
+public class SampleTest extends TestCase {
+
+
+     private java.util.List emptyList;
+
+
+     /**
+      * Sets up the test fixture. 
+      * (Called before every test case method.) 
+      */ 
+     protected void setUp() { 
+          emptyList = new java.util.ArrayList();
+     } 
+
+
+     /**
+      * Tears down the test fixture. 
+      * (Called after every test case method.) 
+      */ 
+     protected void tearDown() { 
+          emptyList = null; 
+     } 
+
+
+     public void testSomeBehavior() { 
+          assertEquals("Empty list should have 0 elements", 0, emptyList.size());
+     } 
+
+     public void testForException() { 
+          try { 
+               Object o = emptyList.get(0); 
+               fail("Should raise an IndexOutOfBoundsException");
+          } 
+          catch (IndexOutOfBoundsException success) {
+          } 
+     } 
+
+}</pre>
+      </blockquote></td>
+  </tr>
+</tbody></table>
+<span class="body"><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#anchor">Top</a> | <a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section0_0">Contents</a></span><br>
+<hr align="left" width="765">
+<span class="title"><a name="section3_0" id="section3_0"></a>3.0 Creating a Test Suite</span> 
+<table width="765" border="0" cellpadding="5" cellspacing="0">
+  <tbody><tr>
+    <td colspan="3" class="body"><p>A TestSuite is a simple way of running one program that, in turn, runs all test cases at one time. </p>
+      <p class="body">3.1 There are four ways to create a JUnit Test Suite Class. First, select the directory (usually<em> unittests/</em>) that you wish to create the test suite class in.</p>
+      <blockquote>
+        <p class="body">3.1.1 Select <strong>File &gt; New &gt; Other... &gt; Java &gt; JUnit &gt; JUnit Test Suite. </strong></p>
+        <p class="body">3.1.2 Select the arrow <img src="./Unit Testing in Eclipse Using JUnit_files/NewProjectIcon.gif" width="36" height="22" align="absmiddle"> of the button in the upper left of the toolbar. Select <strong>Other... &gt; Java &gt; JUnit &gt; JUnit Test Suite</strong>,</p>
+        <p class="body">3.1.3 Right click on a package in the Package Explorer view in the Java Perspective, and select <strong>Other... &gt; Java &gt; JUnit &gt; JUnit Test Suite</strong>, or</p>
+        <p class="body">3.1.4 You can create a normal Java class as shown in the Eclipse tutorial, but include<em> junit.framework.TestSuite</em> as the super class of the test class you are creating. </p>
+      </blockquote>
+      <p class="body">3.2 Check to make sure that you are creating the TestSuite in the proper package. Give the test suite a name. The default name is AllTests.java </p>
+      <blockquote>
+        <p class="body">3.2.1 Use the <strong>Browse</strong> button to search for a source folder, and the package. </p>
+        <p class="body">3.2.2 Select which test classes you would like to include in the test suite. </p>
+        <p class="body">3.2.3. If you would like to create a main class, check the box by <strong>public static void main(String [] args)</strong>. When this box is checked the next checkbox is highlighted. This is where you can chose which JUnit user interface to use. There is a GUI UI and a command line (or Text) UI. If you do not check either of these checkboxes, when you run the test suite, the GUI UI is automatically used. </p>
+      </blockquote>
+      <p class="body">3.3 Click <strong>Finish</strong>. The new test suite class will be open in the editor. </p>
+      <p class="body">3.4 Below is a test suite template from the JUnit FAQ. This test suite demonstrates the basic functionality of the <em>suite()</em> method, which is what you add each of the test cases to the suite in. This should all be generated for you by Eclipse if you use the first 3 methods in step 3.1 to create the Test Suite. </p>
+      <blockquote>
+        <pre class="code">import junit.framework.Test;
+import junit.framework.TestSuite; 
+
+
+public class SampleTestSuite { 
+
+
+     public static Test suite() { 
+          TestSuite suite = new TestSuite("Sample Tests");
+
+          // Add one entry for each test class 
+          // or test suite.
+          suite.addTestSuite(SampleTest.class);
+
+          // For a master test suite, use this pattern. 
+          // (Note that here, it's recursive!) 
+          suite.addTest(AnotherTestSuite.suite()); 
+
+          return suite; 
+     }
+
+}</pre>
+      </blockquote></td>
+  </tr>
+</tbody></table>
+<span class="body"><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#anchor">Top</a> | <a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section0_0">Contents</a></span><br>
+<hr align="left" width="765">
+<a name="section4_0" id="section4_0"></a><span class="title">4.0 Running JUnit Test Cases
+</span>
+<table width="765" border="0" cellpadding="5" cellspacing="0">
+  <tbody><tr>
+    <td class="body"><p>4.1 There are three ways to run JUnit Test Cases or Test Suites. </p>
+      <blockquote>
+        <p>4.1.1 You can right click on the test case class or test suite class and select <strong>Run As &gt; JUnit Test.</strong></p>
+        <p>4.1.2 You can select a test case or suite and click the arrow on the <img src="./Unit Testing in Eclipse Using JUnit_files/RunProgram.gif" width="36" height="22" align="absmiddle"> icon or select Run from the toolbar, and select <strong>Run As &gt; JUnit Test.</strong></p>
+        <p>4.1.3 You can select a test case or suite and click the arrow on the <img src="./Unit Testing in Eclipse Using JUnit_files/RunProgram.gif" width="36" height="22" align="absmiddle"> icon or select Run from the toolbar, and select <strong>Run... </strong>From here you will create a new JUnit test configuration, and name it. You can choose to run a single test case, or run all test cases in a project or folder. </p>
+        <p><span class="note">Note:</span> <span class="note">You should be careful here if you have FIT tests in the project. Running all of the test cases in the project will run those FIT tests and give you errors. The best idea is to just run the tests on the <em>unittest/</em> source folder or whichever source folder contains your tests. </span></p>
+      </blockquote></td>
+  </tr>
+</tbody></table>
+<span class="body"><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#anchor">Top</a> | <a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section0_0">Contents</a></span><br>
+
+<hr align="left" width="765">
+<a name="section6_0" id="section6_0"></a><span class="title">5.0 Assertion Statement Reference 
+</span>
+<table width="765" border="0" cellpadding="5" cellspacing="0">
+  <tbody><tr class="body">
+    <td colspan="3"><p>This is a list of the different types of assertion statements that are used to test your code. Any Java data type or object can be used in the statement. These assertions are taken from the <a href="http://www.junit.org/junit/javadoc/3.8.1/index.htm">JUnit API</a>. </p>
+      <ul>
+        <li>assertEquals(expected, actual)</li>
+        <li>assertEquals(message, expected, actual)</li>
+        <li>assertEquals(expected, actual, delta) - used on doubles or floats, where delta is the difference in precision</li>
+        <li>assertEquals(message, expected, actual, delta) - used on doubles or floats, where delta is the difference in precision</li>
+        <li>assertFalse(condition)</li>
+        <li>assertFalse(message, condition)</li>
+        <li>assertNotNull(object)</li>
+        <li>assertNotNull(message, object)</li>
+        <li>assertNotSame(expected, actual)</li>
+        <li>assertNotSame(message, expected, actual)</li>
+        <li>assertNull(object)</li>
+        <li>assertNull(message, object)</li>
+        <li>assertSame(expected, actual)</li>
+        <li>assertSame(message, expected, actual)</li>
+        <li>assertTrue(condition)</li>
+        <li>assertTrue(message, condition)</li>
+        <li>fail()</li>
+        <li>fail(message)</li>
+        <li>failNotEquals(message, expected, actual)</li>
+        <li>failNotSame(message, expected, actual)</li>
+        <li>failSame(message)</li>
+    </ul></td>
+  </tr>
+</tbody></table>
+<span class="body"><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#anchor">Top</a> | <a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section0_0">Contents</a></span><br>
+<hr align="left" width="765">
+<span class="title"><a name="section7_0" id="section7_0"></a>6.0 Exercise</span>
+<table width="765" border="0" cellspacing="0" cellpadding="5">
+  <tbody><tr>
+    <td colspan="2" class="body"><p>For this exercise we will be using the CoffeeMaker project. Download the <a href="http://realsearchgroup.org/SEMaterials/tutorials/coffee_maker/download/CoffeeMaker_JUnit.zip">CoffeeMaker</a> project from <a href="http://realsearchgroup.org/SEMaterials/tutorials/coffee_maker/download/CoffeeMaker_JUnit.zip">here</a>. Unzip the CoffeeMaker project to your home directory and import the project into Eclipse. Please see the <a href="http://realsearchgroup.org/SEMaterials/tutorials/import_export/">Eclipse Import/Export Guide</a> for instructions on how to import a project into Eclipse.</p>
+      <p>We all know that most computer scientists love caffeine, so the Computer Science department is looking to put a coffee kiosk in the new building. The coffee kiosk must be able to make coffee for students to purchase. Take a look at the CoffeeMaker <a href="http://realsearchgroup.org/SEMaterials/tutorials/coffee_maker/index.html">User Stories/Requirements</a> to look for boundaries and other things to test.</p>
+      <p>The CoffeeMaker code is complete; however, we need you to create 
+and run acceptance tests on the following user story requirements: <strong>1) Add a Recipe, 2) Delete a Recipe, 3) Edit a Recipe, 4) Add Inventory, 5) Check Inventory, and 6) Purchase Coffee</strong>. One test class has been created for you: <em>CoffeeMakerTest</em> under the <em>unittests/</em> directory. You can create  <em>RecipeTest </em>and <em>InventoryTest</em> classes as well. There are currently 5 (very obvious) bugs in the system (some of them are based on requirements). We need you to generate enough unit tests to find these 5 bugs. Once you find the bugs, create a fix (These should be very simple fixes. If the fix takes longer than 5 minutes, you found a bigger bug than the one we wanted you to find! - and you should let your TA know). Find and fix all 5 of the bugs. Create a list of the bugs that you find. </p>
+      <p><strong>Deliverables to the TA</strong></p>
+      <ul>
+        <li>List of bugs found in the Add a Recipe, Delete a Recipe, Edit a Recipe, Add Inventory, Check Inventory, and Purchase Beverage user stories in CoffeeMaker</li>
+        <li>Run all of your JUnit unit tests, which give a green bar. </li>
+    </ul></td>
+  </tr>
+</tbody></table>
+<span class="body"><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#anchor">Top</a> | <a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section0_0">Contents</a></span><br>
+<hr align="left" width="765">
+<a name="section8_0" id="section8_0"></a><span class="title">7.0 Resources
+</span>
+<table width="765" border="0" cellspacing="0" cellpadding="5">
+  <tbody><tr>
+    <td><ul>
+      <li class="body"><a href="http://www.junit.org/">JUnit</a></li>
+      <li><a href="http://junit.sourceforge.net/doc/faq/faq.htm" class="body">JUnit FAQ</a></li>
+      <li class="body"><a href="http://www.junit.org/junit/javadoc/3.8.1/index.htm">JUnit API</a></li>
+      <li><a href="http://www.eclipse.org/" class="body">Eclipse</a></li>
+      <li class="body"><a href="http://realsearchgroup.org/SEMaterials/tutorials/coffee_maker/">CoffeeMaker Example</a></li>
+    </ul></td>
+  </tr>
+</tbody></table>
+<span class="body"><a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#anchor">Top</a> | <a href="http://realsearchgroup.org/SEMaterials/tutorials/junit/junit_tutorial_3.1.html#section0_0">Contents</a></span><br>
+<hr align="left" width="765">
+<a href="http://realsearchgroup.org/SEMaterials/tutorials/index.html" class="body">Back to Software Engineering Tutorials</a>
+<hr align="left" width="765">
+<span class="body">Unit Testing in Eclipse Using JUnit Tutorial ©2003-2008<a href="http://www.ncsu.edu/">North Carolina State University</a>, Laurie Williams, Dright Ho, Sarah Heckman, <br>
+and 
+Ben Smith <br>
+Email <a href="mailto:se_tutorials@lists.ncsu.edu?subject=CSC326%20Lab%20Tutorials%20-%20JUnit-Eclipse">the authors </a> with any questions or comments about this tutorial.<br>
+Last Updated:
+<!-- #BeginDate format:fcAm1a -->Wednesday, August 20, 2008 1:26 PM<!-- #EndDate -->
+</span>
+
+
+<div id="GOOGLE_INPUT_CHEXT_FLAG" style="display: none;" input="" input_stat="{}"></div></body></html>

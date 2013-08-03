@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Release" />
+	<File name="../BMPImage.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1300" topLine="18" />
+	</File>
+	<File name="../BMPImage.h" open="0" top="0" tabpos="0">
+		<Cursor position="56" topLine="0" />
+	</File>
+	<File name="../PerlinNoise.cpp" open="1" top="1" tabpos="0">
+		<Cursor position="78" topLine="0" />
+	</File>
+</CodeBlocks_layout_file>

@@ -1,0 +1,26 @@
+.root {
+    -fx-background-image: url("CoarseGrid.png");
+    -fx-background-repeat: repeat;
+	-fx-background-color:
+        linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
+        linear-gradient(#20262b, #191d22),
+        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
+    -fx-padding: 30px;
+    -fx-padding-top: 60px;
+}
+
+.button, .button:focus {
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#61a2b1, #2A5058);
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(#568f9c, #213e45);
+}
+
+.button:clicked {
+    -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+}

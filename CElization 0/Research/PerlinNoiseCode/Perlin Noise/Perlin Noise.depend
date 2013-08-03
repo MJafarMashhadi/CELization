@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1364498856 source:/home/mjafar/Dropbox/Code/Java Project/Research/PerlinNoiseCode/BMPImage.cpp
+	"BMPImage.h"
+
+1364498290 /home/mjafar/Dropbox/Code/Java Project/Research/PerlinNoiseCode/BMPImage.h
+	<cstdio>
+	<cstdlib>
+	<cstring>
+
+1364500717 source:/home/mjafar/Dropbox/Code/Java Project/Research/PerlinNoiseCode/PerlinNoise.cpp
+	<cstdio>
+	<cstdlib>
+	<cstring>
+	"BMPImage.h"
+

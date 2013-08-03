@@ -1,0 +1,1798 @@
+
+<!-- saved from url=(0050)http://www.vogella.com/articles/JUnit/article.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+      
+   
+      <title>JUnit - Tutorial</title>
+      <link rel="stylesheet" type="text/css" href="./JUnit - Tutorial_files/articles.css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.77.1">
+      <meta name="description" content="Unit testing with JUnit This tutorial explains unit testing with JUnit 4.x. It explains the creation of JUnit tests and how to run them in Eclipse or via own code.">
+      <link rel="shortcut icon" href="http://www.vogella.de/img/favicon.ico">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      
+      
+      <!-- Jennifers Analytics -->
+      
+      <script src="./JUnit - Tutorial_files/cb=gapi.loaded_0" async=""></script><script src="./JUnit - Tutorial_files/quant.js" async="" type="text/javascript"></script><script type="text/javascript" async="" src="./JUnit - Tutorial_files/ga.js"></script><script type="text/javascript">var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-3967758-1']);_gaq.push(['_trackPageview']);_gaq.push(['_trackPageLoadTime']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})();</script>
+      
+      <script src="./JUnit - Tutorial_files/flattr.js" type="text/javascript"></script>
+      
+      
+      <!-- Load jQuery -->
+      <script type="text/javascript" src="./JUnit - Tutorial_files/jquery.js"></script> 
+      
+      <!-- jQuery Up Button -->
+      <script src="./JUnit - Tutorial_files/jqueryup.js" type="text/javascript"></script>
+      
+      
+      
+      
+      <!-- Lake Quincy Ads -->
+      <script type="text/javascript" language="Javascript" src="./JUnit - Tutorial_files/m.min.js"></script>
+      
+      <div id="headerpart">
+         	
+         <div id="topnav">
+            	  
+            <ul id="home" class="topnav">
+               		
+               <li>
+                  			<a class="homebutton" title="Home" href="http://www.vogella.com/">vogella.com</a>
+                  		
+               </li>
+               		
+               <li>
+                  			<a title="Tutorials" href="http://www.vogella.com/tutorials.html"> Tutorials
+                     			</a>
+                  		
+               </li>
+               		
+               		
+               <li>
+                  			<a title="Training" href="http://www.vogella.com/training/index.html">
+                     				Training
+                     			</a>
+                  		
+               </li>
+               		
+               <li>
+                  			<a title="Services" href="http://www.vogella.com/services/index.html">
+                     				Services
+                     			</a>
+                  		
+               </li>
+               		
+               <li>
+                  			<a title="Books" href="http://www.vogella.com/books.html">
+                     				Publications
+                     			</a>
+                  		
+               </li>
+               		
+               <li>
+                  			<a title="Connect" href="http://www.vogella.com/social.html">
+                     				Connect
+                     			</a>
+                  		
+               </li>
+               	
+            </ul>
+            
+            	
+         </div>
+         
+         	
+         <div id="logo">
+            		<a title="vogella.com" href="http://www.vogella.com/">
+               			<img src="./JUnit - Tutorial_files/vogella_current_logo.png" alt="vogella.com"> 
+               		</a>
+            	
+         </div>
+         
+         
+      </div> 
+      <!-- headerpart -->
+      
+      
+      
+      
+      <div id="leftcol">
+         
+         	
+         <div class="sidebar">
+            		
+            <div id="intro">
+               		<br>
+               		
+               <!-- GooglePlus - Place this tag in your head or just before your close body tag -->
+               		<script type="text/javascript" src="./JUnit - Tutorial_files/plusone.js" gapi_processed="true"></script>
+               
+               		
+               <!-- Place this tag where you want the +1 button to render -->
+               		<div style="position: absolute; width: 450px; left: -10000px;" id="___plusone_0"><iframe frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: absolute; top: -10000px; width: 450px; margin: 0px; border-style: none;" tabindex="0" vspace="0" width="100%" id="I0_1365875640590" name="I0_1365875640590" src="./JUnit - Tutorial_files/fastbutton.htm" allowtransparency="true" data-gapiattached="true"></iframe></div><div class="g-plusone" data-size="standard" data-count="true" data-gapiscan="true" data-onload="true" data-gapistub="true">
+                  		
+               </div>
+               
+               		
+            </div> 
+            <!--intro-->
+            
+            		
+            		
+            		<br>
+            		Free tutorial, donate to support
+            		<br><br>
+            		
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+               		<input type="hidden" name="cmd" value="_s-xclick">
+               		<input type="hidden" name="hosted_button_id" value="10463995">
+               		<input type="image" src="./JUnit - Tutorial_files/btn_donateCC_LG.gif" border="0" name="submit" alt="Donation">
+               		<img alt="" border="0" src="./JUnit - Tutorial_files/pixel.gif" width="1" height="1">
+                                       				
+               		
+            </form>
+            		<br>
+             			
+            <div class="figure">
+                                
+                              
+               <p><a rel="author" href="http://www.vogella.com/about.html"> 
+                                          		<img src="./JUnit - Tutorial_files/LarsVogelArticle8.png" height="115" width="125" alt="About Lars Vogel">
+                                          	</a>
+                                    	
+                                 
+               </p>
+                                
+                              
+               <p>by Lars Vogel</p>
+                              
+                   
+            </div>
+             		
+            		
+            	
+         </div> 
+         <!--sidebar-->
+         	
+         
+         
+         <script type="text/javascript">google_ad_client="ca-pub-3851443674951530";google_ad_slot="6294971031";google_ad_width=160;google_ad_height=600;</script>
+         <script type="text/javascript" src="./JUnit - Tutorial_files/show_ads.js"></script>
+         
+         
+         <br>
+         <br>
+         <br>
+         <br>
+         
+         
+         
+         <!-- Lake Quincy-->
+         
+         <div class="lqm_ad" lqm_publisher="lqm.javaeclipseandroid.site" lqm_zone="ron" lqm_tags="Android%2cMobile%2cJava" lqm_format="160x600"></div>
+         
+         <p></p>
+         
+         
+         <p id="back-top" style="display: block;"><a href="http://www.vogella.com/articles/JUnit/article.html#top"><span></span> Back to top </a>
+            
+         </p>
+         
+         
+         
+      </div> 
+      <!-- leftcolumn -->
+      
+      
+      
+      
+      <div id="rightcol">
+         
+         
+         <p class="training-bg">
+                     
+                        <a class="image-z" href="http://www.vogella.com/training/overview.html"> 
+                                <img src="./JUnit - Tutorial_files/vogellatraining_ad.png" height="364" width="200" alt="vogella training">
+               	
+                           </a>
+                        <a class="btn-training button1" href="http://www.vogella.com/training/overview.html">Training</a>
+                        <a class="btn-training button2" href="http://www.vogella.com/books.html">Books</a>
+            
+         </p>
+         
+         
+         <div class="twitter">
+                
+            <div class="twitt">
+                               <a href="http://www.twitter.com/vogella"> 
+                                      <img src="./JUnit - Tutorial_files/twitter.png" alt="Follow me on twitter">  
+                                  </a>
+                   
+            </div>
+                        
+                
+            <div class="googleplus">
+                               <a rel="me" href="https://profiles.google.com/104044918586174763681">
+                                      <img src="./JUnit - Tutorial_files/google.png" alt="Lars Vogel on Google+"> 
+                                  </a>
+                  
+            </div>
+            
+         </div>
+         
+         
+      </div> 
+      <!--rightcol-->
+      
+      
+      
+      <div class="article">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title"><a name="d18206e1"></a>JUnit - Tutorial
+                     
+                  </h2>
+               </div>
+               <div>
+                  <div class="author">
+                     <h3 class="author"><span class="firstname">Lars</span> <span class="surname">Vogel</span></h3>
+                  </div>
+               </div>
+               <div>
+                  <p class="releaseinfo">
+                           
+                  </p>
+                  <p>Version 2.3</p>
+                  <p class="releaseinfo">
+                         
+                  </p>
+               </div>
+               <div>
+                  <p class="copyright">Copyright © 2007, 2008, 2009, 2010, 2011, 2012  Lars Vogel</p>
+               </div>
+               <div>
+                  <p class="pubdate">06.12.2012</p>
+               </div>
+               <div>
+                  <div class="revhistory">
+                     <table summary="Revision History">
+                        <tbody><tr>
+                           <th align="left" valign="top" colspan="4"><b>Revision History</b></th>
+                        </tr>
+                        <tr>
+                           <td align="left">Revision 0.1-0.5</td>
+                           <td align="left">03.09.2007</td>
+                           <td align="left"><span class="firstname">Lars<br></span><span class="surname">Vogel<br></span></td>
+                           <td align="left">JUnit description</td>
+                        </tr>
+                        <tr>
+                           <td align="left">Revision 0.6 - 2.3</td>
+                           <td align="left">10.05.2008 - 06.12.2012</td>
+                           <td align="left"><span class="firstname">Lars<br></span><span class="surname">Vogel<br></span></td>
+                           <td align="left">bugfixes and enhancements</td>
+                        </tr>
+                     </tbody></table>
+                  </div>
+               </div>
+               <div>
+                  <div class="abstract"><a name="abstract"></a><p class="title"><b>Unit testing with JUnit </b></p>
+                     <p> This tutorial explains unit testing with JUnit
+                                4.x. It explains
+                                the creation of JUnit tests and how to run them in Eclipse or via
+                                own code.
+                              
+                     </p>
+                  </div>
+               </div>
+            </div>
+            <hr>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#unittesting">1. Introduction to unit testing</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#junit_intro">1.1. Unit tests and unit testing</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#unittesting_junit">1.2. Unit testing with JUnit</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#usingjunit_annotations">1.3. Available JUnit annotations</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#usingjunit_asserts">1.4. Assert statements</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#juniteclipse_testsuite">1.5. Create a JUnit test suite</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#juniteclipse_code">1.6. Run your test outside Eclipse</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#installation">2. Installation of JUnit</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#installation_eclipse">2.1. Using JUnit integrated into Eclipse</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#installation_junit">2.2. Downloading the JUnit library</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#eclipse">3. Eclipse support for JUnit</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#eclipse_creatingjunittest">3.1. Creating JUnit tests</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#eclipse_runningjunittest">3.2. Running JUnit tests</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#usingjunit_staticimports">3.3. JUnit static imports</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#usingjunit_testsuites">3.4. Wizard for creating test suites</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#usingjunit_execption">3.5. Testing exception</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#juniteclipse">4. Exercise: Using JUnit</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#juniteclipse_prep">4.1. Project preparation</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#juniteclipse_class">4.2. Create a Java class</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#juniteclipse_test">4.3. Create a JUnit test </a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#juniteclipse_eclipse">4.4. Run your test in Eclipse</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#junitadvanced">5. Advanced JUnit options</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#junitadvanced_parameterizedtests">5.1. Parameterized test</a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#junitadvanced_rules">5.2. Rules</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#easymock">6. Mocking with EasyMock </a></span></dt>
+               <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#thankyou">7. Thank you </a></span></dt>
+               <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#questions">8. Questions and Discussion</a></span></dt>
+               <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#resources">9. Links and Literature</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#junit_links">9.1. JUnit Resources </a></span></dt>
+                     <dt><span class="section"><a href="http://www.vogella.com/articles/JUnit/article.html#resources_general">9.2. vogella Resources</a></span></dt>
+                  </dl>
+               </dd>
+            </dl>
+         </div>
+         <div id="kindle">
+            
+            This tutorial is part of this Kindle book:
+            
+            <p></p>
+            
+            <a href="http://www.amazon.com/dp/B006O1J39S"> 
+               	<img src="./JUnit - Tutorial_files/EclipseIDE_book.png" width="150" height="200" alt="Kindle Edition"> 
+               </a>
+            
+            
+         </div> 
+         
+         
+         
+         
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title"><a name="unittesting"></a>1.&nbsp;Introduction to unit testing
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="junit_intro"></a>1.1.&nbsp;Unit tests and unit testing
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  A
+                  <em class="wordasword">unit test</em>
+                  <a class="indexterm" name="d18206e83"></a>
+                  is a piece of code written by a developer that
+                  executes
+                  a specific
+                  functionality in the code which is tested. The percentage of code
+                  which is tested by unit tests is typically called
+                  <em class="wordasword">test coverage</em>.
+                  
+               </p>
+               <p>
+                  Unit tests target small units of code, e.g. a method or a class,
+                  (local
+                  tests)
+                  whereas
+                  <em class="wordasword">component and integration tests</em>
+                  targeting to test the behavior
+                  of a component or the integration
+                  between a set
+                  of components or a
+                  complete application consisting of
+                  several
+                  components.
+                  
+               </p>
+               <p>Unit tests
+                  ensure that
+                  code
+                  works
+                  as intended. They are also very
+                  helpful to ensure that the
+                  code still
+                  works as intended in case you
+                  need to modify code for fixing a bug or extending functionality.
+                  Having a high test coverage of your code allows you to continue
+                  developing features without having to perform lots of manual tests.
+                  
+               </p>
+               <p>Typically unit tests are created in their own project or their
+                  own source folder to avoid that the normal code and the test code is
+                  mixed.
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="unittesting_junit"></a>1.2.&nbsp;Unit testing with JUnit
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  <em class="wordasword">JUnit</em>
+                  <em class="wordasword">unit test</em>
+                  <a class="indexterm" name="d18206e110"></a>
+                  in version
+                  4.x is a test framework
+                  which uses annotations to identify
+                  methods that
+                  specify a test. Typically these test methods are
+                  contained in a class which is only used for testing. It is typically
+                  called a
+                  <em class="wordasword">Test class</em>.
+                  
+                  
+               </p>
+               <p>
+                  The following code shows a JUnit test method
+                  <a class="indexterm" name="d18206e119"></a>
+                  which can be created via
+                  <span class="guimenu">File</span> &#8594; <span class="guisubmenu">New</span> &#8594; <span class="guisubmenu">JUnit</span> &#8594; <span class="guisubmenu">JUnit Test case</span>.
+                  
+               </p>
+               <p>
+                  
+               </p><pre class="programlisting"><em><span class="hl-annotation" style="color: gray">@Test</span></em>
+<span class="hl-keyword">public</span> <span class="hl-keyword">void</span> testMultiply() {
+
+   <em class="hl-comment" style="color: #080">// MyClass is tested</em>
+   MyClass tester = <span class="hl-keyword">new</span> MyClass();
+   
+   <em class="hl-comment" style="color: #080">// Check if multiply(10,5) returns 50</em>
+   assertEquals(<span class="hl-string" style="color:blue">"10 x 5 must be 50"</span>, <span class="hl-number">50</span>, tester.multiply(<span class="hl-number">10</span>, <span class="hl-number">5</span>));
+ } </pre><p>
+                  
+               </p>
+               <p>JUnit
+                  assumes that all test methods
+                  can
+                  be executed
+                  in
+                  an
+                  arbitrary
+                  order.
+                  Therefore tests
+                  should not depend on
+                  other tests.
+                  
+               </p>
+               <p>
+                  To
+                  write a test with
+                  JUnit you annotate a method with the
+                  <code class="code">@org.junit.Test</code>
+                  <a class="indexterm" name="d18206e147"></a>
+                  annotation
+                  and use a method provided by JUnit to check the expected
+                  result
+                  of the code execution versus the actual result.
+                  
+               </p>
+               <p>
+                  You can use the
+                  Eclipse user interface to run the test, via
+                  right-click on the test class and selecting
+                  <span class="guimenu">Run </span> &#8594; <span class="guisubmenu">Run As</span> &#8594; <span class="guisubmenu">JUnit Test</span>. Outside of Eclipse you can use
+                  <code class="code">org.junit.runner.JUnitCore</code>
+                  class to run the test.
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="usingjunit_annotations"></a>1.3.&nbsp;Available JUnit annotations
+                        </h3>
+                     </div>
+                  </div>
+               </div><a class="indexterm" name="d18206e169"></a><p> The following table gives an overview of the available
+                  annotations in
+                  JUnit 4.x.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="table"><a name="d18206e178"></a><p class="title"><b>Table&nbsp;1.&nbsp;Annotations</b></p>
+                  <div class="table-contents">
+                     <table summary="Annotations" border="1">
+                        <colgroup>
+                           <col align="left" class="c1">
+                           <col align="left" class="c2">
+                        </colgroup>
+                        <thead>
+                           <tr>
+                              <th align="left">Annotation</th>
+                              <th align="left">Description</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr>
+                              <td align="left">
+                                 
+                                 <p>
+                                    @Test
+                                    <br>
+                                    public void method()
+                                    
+                                 </p>
+                                 
+                              </td>
+                              <td align="left"> The annotation @Test identifies that a method is a test
+                                 method.
+                                 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td align="left">
+                                 @Before
+                                 <br>
+                                 public void method()
+                                 
+                              </td>
+                              <td align="left">This method is executed before each test. This method
+                                 can
+                                 prepare the test environment (e.g. read input data,
+                                 initialize
+                                 the class).
+                                 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td align="left">
+                                 @After
+                                 <br>
+                                 public void method()
+                                 
+                              </td>
+                              <td align="left"> This method is executed after each test. This method can
+                                 cleanup the test environment (e.g. delete temporary data,
+                                 restore defaults). It can also save memory by cleaning up
+                                 expensive memory structures.
+                                 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td align="left">
+                                 @BeforeClass
+                                 <br>
+                                 public static void method()
+                                 
+                              </td>
+                              <td align="left">
+                                 This method is executed once, before the start of all
+                                 tests.
+                                 This
+                                 can
+                                 be used to perform time intensive activities, for
+                                 example to
+                                 connect to a database. Methods annotated with this
+                                 annotation
+                                 need to be defined as
+                                 <code class="code">static</code>
+                                 to work with JUnit.
+                                 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td align="left">
+                                 @AfterClass
+                                 <br>
+                                 public static void method()
+                                 
+                              </td>
+                              <td align="left">
+                                 This method is executed once, after all tests have been
+                                 finished.
+                                 This can be used to perform clean-up activities, for
+                                 example to
+                                 disconnect from a database. Methods annotated with
+                                 this
+                                 annotation
+                                 need to be defined as
+                                 <code class="code">static</code>
+                                 to work with JUnit.
+                                 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td align="left">@Ignore</td>
+                              <td align="left"> Ignores the test method. This is useful when the
+                                 underlying code has been changed and the test case has not yet
+                                 been
+                                 adapted. Or if the execution time of this test is too long
+                                 to be
+                                 included.
+                                 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td align="left"> @Test (expected = Exception.class)</td>
+                              <td align="left"> Fails, if the method does not throw the named
+                                 exception.
+                                 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td align="left">@Test(timeout=100)</td>
+                              <td align="left"> Fails, if the method takes longer than 100 milliseconds.
+                                 
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+               <p><br class="table-break">
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="usingjunit_asserts"></a>1.4.&nbsp;Assert statements
+                        </h3>
+                     </div>
+                  </div>
+               </div><a class="indexterm" name="d18206e254"></a><p>
+                  JUnit provides static methods in the
+                  <code class="code">Assert</code>
+                  class
+                  to test for certain conditions. These methods
+                  typically start
+                  with
+                  <code class="code">asserts</code>
+                  and allow you to specify the error message, the expected and the
+                  actual
+                  result.
+                  The
+                  following table gives an overview of these
+                  methods.
+                  Parameters in [] brackets are optional.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="table"><a name="d18206e269"></a><p class="title"><b>Table&nbsp;2.&nbsp;Test methods</b></p>
+                  <div class="table-contents">
+                     <table summary="Test methods" border="1">
+                        <colgroup>
+                           <col align="left" class="c1">
+                           <col align="left" class="c2">
+                        </colgroup>
+                        <thead>
+                           <tr>
+                              <th align="left">Statement</th>
+                              <th align="left">Description</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr>
+                              <td align="left">fail(String)</td>
+                              <td align="left"> Let the method fail. Might be used to check that a
+                                 certain part of the code is not reached. Or to have a failing
+                                 test
+                                 before the test code is implemented.
+                                 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td align="left"> assertTrue([message], boolean condition)</td>
+                              <td align="left"> Checks that the boolean condition is true.</td>
+                           </tr>
+                           <tr>
+                              <td align="left"> assertsEquals([String message], expected, actual)</td>
+                              <td align="left"> Tests that two values are the same. Note: for arrays the
+                                 reference is checked not the content of the arrays.
+                                 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td align="left"> assertsEquals([String message], expected, actual,
+                                 tolerance)
+                                 
+                              </td>
+                              <td align="left"> Test that float or double values match. The tolerance is
+                                 the number
+                                 of decimals which must be the same.
+                                 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td align="left">assertNull([message], object)</td>
+                              <td align="left">Checks that the object is null.</td>
+                           </tr>
+                           <tr>
+                              <td align="left"> assertNotNull([message], object)</td>
+                              <td align="left"> Checks that the object is not null.</td>
+                           </tr>
+                           <tr>
+                              <td align="left"> assertSame([String], expected, actual)</td>
+                              <td align="left"> Checks that both variables refer to the same object.
+                                 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td align="left"> assertNotSame([String], expected, actual)</td>
+                              <td align="left"> Checks that both variables refer to different objects.
+                                 
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+               <p><br class="table-break">
+                  
+               </p>
+               <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+                  <h3 class="title">Note</h3>
+                  <p>You should provide meaningful messages in assertions so that it
+                     is easier for the developer to identify the problem. This help in
+                     fixing the issue, especially if someone looks at the problem, which
+                     did not write the  code under test or the test code.
+                     
+                  </p>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="juniteclipse_testsuite"></a>1.5.&nbsp;Create a JUnit test suite
+                        </h3>
+                     </div>
+                  </div>
+               </div><a class="indexterm" name="d18206e329"></a><p>
+                  If you have several test classes you can combine them into a
+                  <em class="wordasword">test suite</em>. Running a test suite will execute all
+                  test classes in that suite.
+                  
+               </p>
+               <p>
+                  The following example code shows a test suite which defines that two
+                  test classes should be executed.
+                  If you want to add
+                  another test class
+                  you can add it to
+                  <code class="code">@Suite.SuiteClasses</code>
+                  statement.
+                  
+               </p>
+               <p>
+                  
+               </p><pre class="programlisting"><span class="hl-keyword">package</span> com.vogella.junit.first;
+
+<span class="hl-keyword">import</span> org.junit.runner.RunWith;
+<span class="hl-keyword">import</span> org.junit.runners.Suite;
+<span class="hl-keyword">import</span> org.junit.runners.Suite.SuiteClasses;
+
+<em><span class="hl-annotation" style="color: gray">@RunWith(Suite.class)</span></em>
+<em><span class="hl-annotation" style="color: gray">@SuiteClasses({ MyClassTest.class, MySecondClassTest.class })</span></em>
+<span class="hl-keyword">public</span> <span class="hl-keyword">class</span> AllTests {
+
+} </pre><p>
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="juniteclipse_code"></a>1.6.&nbsp;Run your test outside Eclipse
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Eclipse provides support for running your test interactively in the
+                  Eclipse IDE.
+                  You can also run your JUnit tests outside Eclipse via
+                  standard Java code. The
+                  <code class="code">org.junit.runner.JUnitCore</code>
+                  class
+                  provides the
+                  <code class="code">runClasses()</code>
+                  method which
+                  allows you to run one or
+                  several tests classes. As a
+                  return parameter
+                  you receive an object of
+                  the
+                  type
+                  <code class="code">org.junit.runner.Result</code>. This object
+                  can be used to retrieve information about the tests.
+                  
+               </p>
+               <p>
+                  In your
+                  <code class="filename">test</code>
+                  folder create a new class
+                  <code class="code">MyTestRunner</code>
+                  with the
+                  following code. This class will execute your test class and
+                  write
+                  potential failures to the console.
+                  
+               </p>
+               <p>
+                  
+               </p><pre class="programlisting"><span class="hl-keyword">package</span> de.vogella.junit.first;
+
+<span class="hl-keyword">import</span> org.junit.runner.JUnitCore;
+<span class="hl-keyword">import</span> org.junit.runner.Result;
+<span class="hl-keyword">import</span> org.junit.runner.notification.Failure;
+
+<span class="hl-keyword">public</span> <span class="hl-keyword">class</span> MyTestRunner {
+  <span class="hl-keyword">public</span> <span class="hl-keyword">static</span> <span class="hl-keyword">void</span> main(String[] args) {
+    Result result = JUnitCore.runClasses(MyClassTest.<span class="hl-keyword">class</span>);
+    <span class="hl-keyword">for</span> (Failure failure : result.getFailures()) {
+      System.out.println(failure.toString());
+    }
+  }
+} </pre><p>
+                  
+               </p>
+               <p>To run your JUnit tests outside Eclipse you need to add the
+                  JUnit library jar to the classpath of your program. Typically build
+                  frameworks like Apache Ant or Apache Maven are used to execute tests
+                  automatically on a regular basis.
+                  
+               </p>
+            </div>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title"><a name="installation"></a>2.&nbsp;Installation of JUnit
+                     </h2>
+                  </div>
+               </div>
+            </div><a class="indexterm" name="d18206e381"></a><div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="installation_eclipse"></a>2.1.&nbsp;Using JUnit integrated into Eclipse
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p> Eclipse allows you to use
+                  the version of JUnit which is
+                  integrated
+                  in Eclipse. If you use Eclipse no additional setup is
+                  required. In this case you can skip the following section. 
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="installation_junit"></a>2.2.&nbsp;Downloading the JUnit library
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  If you want to control the used JUnit library explicitly,
+                  download
+                  JUnit4.x.jar from the following JUnit website. The download
+                  contains
+                  the
+                  <code class="filename">junit-4.*.jar</code>
+                  which is the JUnit
+                  library.
+                  Add this library
+                  to your
+                  Java project and add
+                  it to the
+                  classpath.
+                  
+               </p>
+               <p>
+                  
+               </p><pre class="programlisting">http:<em class="hl-comment" style="color: #080">//junit.org/ </em></pre><p>
+                  
+               </p>
+            </div>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title"><a name="eclipse"></a>3.&nbsp;Eclipse support for JUnit
+                     </h2>
+                  </div>
+               </div>
+            </div><a class="indexterm" name="d18206e407"></a><div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="eclipse_creatingjunittest"></a>3.1.&nbsp;Creating JUnit tests
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  You can write the JUnit tests manually but Eclipse supports the
+                  creation of JUnit tests via
+                  wizards.
+                  
+               </p>
+               <p>
+                  For example to create
+                  a JUnit test or a test class for an existing
+                  class, right-click
+                  on
+                  your new class,
+                  select this class in
+                  the
+                  <span class="guilabel">Package Explorer</span>
+                  <em class="wordasword">view</em>, right-click on it
+                  and select
+                  <span class="guimenu">New</span> &#8594; <span class="guisubmenu">JUnit Test Case</span>.
+                  
+               </p>
+               <p>
+                  Alternatively you can also use the JUnit wizards available under
+                  <span class="guimenu">File</span> &#8594; <span class="guisubmenu">New </span> &#8594; <span class="guisubmenu">Other...</span> &#8594; <span class="guisubmenu">Java</span> &#8594; <span class="guisubmenu">JUnit</span>.
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="eclipse_runningjunittest"></a>3.2.&nbsp;Running JUnit tests
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  To run a test, select the class which contains the tests, right-click on it and select
+                  <span class="guimenu">Run-as</span> &#8594; <span class="guisubmenu">JUnit Test</span>. This starts JUnit and executes all test methods in this class.
+                  
+               </p>
+               <p>
+                  Eclipse provides the
+                  <span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>Shift</strong></span>+<span class="keycap"><strong>X,</strong></span>
+                  <span class="keycap"><strong>,T</strong></span>
+                  shortcut to run the test in the selected class. If you position the
+                  cursor on one method name, this shortcut runs only the selected test
+                  method.
+                  
+               </p>
+               <p>
+                  To see the result of an JUnit test, Eclipse uses the
+                  <span class="guilabel">JUnit</span>
+                  <em class="wordasword">view</em>
+                  which shows the results of the tests. You can also select individual
+                  unit test in this view , right-click them and select
+                  <span class="guilabel">Run</span>
+                  to execute them again.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/junitview10.png" alt="JUnit view"></div>
+               <p>
+                  
+               </p>
+               <p>
+                  
+                  By default this view shows all tests
+                  you
+                  can also configure, that
+                  it
+                  shows only
+                  failing
+                  tests.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/junit_showonerroronly.png" alt="JUnit view"></div>
+               <p>
+                  
+               </p>
+               <p>You can also define that the view is only activated if you have
+                  a failing test.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/junit_showonerroronly2.png" alt="JUnit view"></div>
+               <p>
+                  
+               </p>
+               <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+                  <h3 class="title">Note</h3>
+                  <p>
+                     Eclipse creates run configurations for tests. You can see and modify
+                     these via the
+                     <span class="guimenu">Run</span> &#8594; <span class="guisubmenu">Run Configurations...</span>
+                     menu.
+                     
+                  </p>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="usingjunit_staticimports"></a>3.3.&nbsp;JUnit static imports
+                        </h3>
+                     </div>
+                  </div>
+               </div><a class="indexterm" name="d18206e524"></a><p>
+                  JUnit uses static methods and Eclipse cannot always
+                  create the
+                  corresponding
+                  <code class="code">static import</code>
+                  statements automatically.
+                  
+               </p>
+               <p>
+                  You can make the JUnit test
+                  methods
+                  available via the content
+                  assists.
+                  
+               </p>
+               <p>
+                  Open the Preferences via
+                  <span class="guimenu">Window</span> &#8594; <span class="guisubmenu">Preferences</span>
+                  and select
+                  <span class="guimenu">Java</span> &#8594; <span class="guisubmenu">Editor</span> &#8594; <span class="guisubmenu">Content Assist</span> &#8594; <span class="guisubmenu">Favorites</span>.
+                  
+               </p>
+               <p>
+                  Use the new
+                  <span class="guibutton">New Type</span>
+                  button to add the
+                  <code class="code">org.junit.Assert</code>
+                  type. This makes for example the
+                  <code class="code">assertTrue</code>,
+                  <code class="code">assertFalse</code>
+                  and
+                  <code class="code">assertEquals</code>
+                  methods directly available in the content assists.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/staticimport10.png" alt="Adding static imports to the preferences"></div>
+               <p>
+                  
+               </p>
+               <p>
+                  You can now use Content
+                  Assist
+                  (Ctrl+Space) to
+                  add
+                  the
+                  method and the
+                  import.
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="usingjunit_testsuites"></a>3.4.&nbsp;Wizard for creating test suites
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  To create a test suite in Eclipse you select the test classes which
+                  should be
+                  included into this in the
+                  <span class="guilabel">Package Explorer</span>
+                  <em class="wordasword">view</em>, right-click on them and
+                  select
+                  <span class="guimenu">New </span> &#8594; <span class="guisubmenu">Other...</span> &#8594; <span class="guisubmenu">JUnit</span> &#8594; <span class="guisubmenu">JUnit Test Suite</span>.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/junittestsuite10.png" alt="Create a test suite"></div>
+               <p>
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="usingjunit_execption"></a>3.5.&nbsp;Testing exception
+                        </h3>
+                     </div>
+                  </div>
+               </div><a class="indexterm" name="d18206e615"></a><p>
+                  The
+                  <code class="code">@Test (expected = Exception.class)</code>
+                  annotation is limited as it can only test for one exception. To test
+                  exceptions you can use the following test pattern.
+                  
+               </p>
+               <p>
+                  
+               </p><pre class="programlisting"><span class="hl-keyword">try</span> {
+   mustThrowException(); 
+   fail();
+} <span class="hl-keyword">catch</span> (Exception e) {
+   <em class="hl-comment" style="color: #080">// expected</em>
+   <em class="hl-comment" style="color: #080">// could also check for message of exception, etc.</em>
+} </pre><p>
+                  
+               </p>
+            </div>
+         </div> 
+         <script type="text/javascript">google_ad_client="pub-3851443674951530";google_ad_slot="8639282357";google_ad_width=728;google_ad_height=90;</script>
+         <script type="text/javascript" src="./JUnit - Tutorial_files/show_ads.js"></script>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title"><a name="juniteclipse"></a>4.&nbsp;Exercise: Using JUnit
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="juniteclipse_prep"></a>4.1.&nbsp;Project preparation
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Create a new project called
+                  <em class="wordasword">com.vogella.junit.first</em>.
+                  
+               </p>
+               <p>
+                  Create a new source
+                  folder
+                  <code class="code">test</code>. For this
+                  right-click on your
+                  project,
+                  select
+                  <span class="guilabel">Properties</span>
+                  and choose the
+                  <span class="guilabel">Java
+                     Build Path
+                     </span>. Select the
+                  <span class="guilabel">Source</span>
+                  tab.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/junit10.png" alt="Create new source folder for the tests"></div>
+               <p>
+                  
+               </p>
+               <p>
+                  Press the
+                  <span class="guibutton">Add Folder</span>
+                  button, afterwards press the
+                  <span class="guibutton">Create New Folder</span>
+                  button. Create
+                  the
+                  <code class="filename">test</code>
+                  folder.
+                  
+               </p>
+               <p>The result is depicted in the following sceenshot.</p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/junit20.png" alt="Creating a new folder"></div>
+               <p>
+                  
+               </p>
+               <p>
+                  Alternatively you can add a new source folder
+                  by right-clicking on a
+                  project and selecting
+                  <span class="guimenu">New </span> &#8594; <span class="guisubmenu">Source Folder</span>.
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="juniteclipse_class"></a>4.2.&nbsp;Create a Java class
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  In the
+                  <code class="filename">src</code>
+                  folder, create the
+                  <code class="code">com.vogella.junit.first</code>
+                  package
+                  and the following
+                  class.
+                  
+               </p>
+               <p>
+                  
+               </p><pre class="programlisting"><span class="hl-keyword">package</span> com.vogella.junit.first;
+
+<span class="hl-keyword">public</span> <span class="hl-keyword">class</span> MyClass {
+  <span class="hl-keyword">public</span> <span class="hl-keyword">int</span> multiply(<span class="hl-keyword">int</span> x, <span class="hl-keyword">int</span> y) {
+    <em class="hl-comment" style="color: #080">// the following is just an example</em>
+    <span class="hl-keyword">if</span> (x &gt; <span class="hl-number">999</span>) {
+      <span class="hl-keyword">throw</span> <span class="hl-keyword">new</span> IllegalArgumentException(<span class="hl-string" style="color:blue">"X should be less than 1000"</span>);
+    }
+    <span class="hl-keyword">return</span> x / y;
+  }
+} </pre><p>
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="juniteclipse_test"></a>4.3.&nbsp;Create a JUnit test 
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Right-click on your new class in the
+                  <span class="guilabel">Package Explorer</span>
+                  <em class="wordasword">view</em>
+                  and select
+                  <span class="guimenu">New</span> &#8594; <span class="guisubmenu">JUnit Test Case</span>.
+                  
+               </p>
+               <p>
+                  In the following wizard
+                  ensure that the
+                  <span class="guilabel">New JUnit 4 test</span> flag
+                  is selected
+                  and set the source folder to
+                  <code class="filename">test</code>,
+                  so
+                  that your test class gets created in this folder.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/junit30.png" alt="Create new test class"></div>
+               <p>
+                  
+               </p>
+               <p>
+                  Press the
+                  <span class="guibutton">Next</span>
+                  button and select the methods that you want to test.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/junit40.png" alt="Selecting the methods to test"></div>
+               <p>
+                  
+               </p>
+               <p> If the JUnit library is not part of the classpath of your
+                  project, Eclipse
+                  will
+                  prompt you to add it. Use this to add JUnit to
+                  your project.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/junit50.png" alt="Eclipse prompt for adding JUnit to the project class path"></div>
+               <p>
+                  
+               </p>
+               <p>Create a test with the following code.</p>
+               <p>
+                  
+               </p><pre class="programlisting"><span class="hl-keyword">package</span> com.vogella.junit.first;
+
+<span class="hl-keyword">import</span> <span class="hl-keyword">static</span> org.junit.Assert.assertEquals;
+
+<span class="hl-keyword">import</span> org.junit.AfterClass;
+<span class="hl-keyword">import</span> org.junit.BeforeClass;
+<span class="hl-keyword">import</span> org.junit.Test;
+
+<span class="hl-keyword">public</span> <span class="hl-keyword">class</span> MyClassTest {
+
+  <em><span class="hl-annotation" style="color: gray">@BeforeClass</span></em>
+  <span class="hl-keyword">public</span> <span class="hl-keyword">static</span> <span class="hl-keyword">void</span> testSetup() {
+  }
+
+  <em><span class="hl-annotation" style="color: gray">@AfterClass</span></em>
+  <span class="hl-keyword">public</span> <span class="hl-keyword">static</span> <span class="hl-keyword">void</span> testCleanup() {
+    <em class="hl-comment" style="color: #080">// Teardown for data used by the unit tests</em>
+  }
+
+  <em><span class="hl-annotation" style="color: gray">@Test(expected = IllegalArgumentException.class)</span></em>
+  <span class="hl-keyword">public</span> <span class="hl-keyword">void</span> testExceptionIsThrown() {
+    MyClass tester = <span class="hl-keyword">new</span> MyClass();
+    tester.multiply(<span class="hl-number">1000</span>, <span class="hl-number">5</span>);
+  }
+
+  <em><span class="hl-annotation" style="color: gray">@Test</span></em>
+  <span class="hl-keyword">public</span> <span class="hl-keyword">void</span> testMultiply() {
+    MyClass tester = <span class="hl-keyword">new</span> MyClass();
+    assertEquals(<span class="hl-string" style="color:blue">"10 x 5 must be 50"</span>, <span class="hl-number">50</span>, tester.multiply(<span class="hl-number">10</span>, <span class="hl-number">5</span>));
+  }
+} </pre><p>
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="juniteclipse_eclipse"></a>4.4.&nbsp;Run your test in Eclipse
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Right-click on your new test class and select
+                  <span class="guimenu"> Run-As</span> &#8594; <span class="guisubmenu">JUnit Test</span>.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/junit60.png" alt="Run JUnit test in Eclipse"></div>
+               <p>
+                  
+               </p>
+               <p>
+                  The result of the tests will be displayed in the JUnit
+                  <em class="wordasword">view</em>. In our example one test should be succesful and one test should
+                  show an error. This error is indicated by a red bar.
+                  
+               </p>
+               <p>
+                  
+               </p>
+               <div class="mediaobject"><img src="./JUnit - Tutorial_files/junit70.png" alt="Result of running a unit test"></div>
+               <p>
+                  
+               </p>
+               <p>
+                  The test is failing 
+                  because our multiplier class is
+                  currently not working
+                  correctly. It
+                  does a
+                  division instead of
+                  multiplication. Fix the bug
+                  and re-run
+                  test to get
+                  a green bar.
+                  
+               </p>
+            </div>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title"><a name="junitadvanced"></a>5.&nbsp;Advanced JUnit options
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="junitadvanced_parameterizedtests"></a>5.1.&nbsp;Parameterized test
+                        </h3>
+                     </div>
+                  </div>
+               </div><a class="indexterm" name="d18206e819"></a><p>JUnit allows you to use parameters in a tests class. This class
+                  can contain one test
+                  method and this method is executed with the
+                  different
+                  parameters provided.
+                  
+               </p>
+               <p>
+                  You mark a test class as a parameterized test with the
+                  <code class="code">@RunWith(Parameterized.class)</code>
+                  annotation.
+                  
+               </p>
+               <p>
+                  Such a test class must contain a static method annotated with
+                  <code class="code">@Parameters</code>
+                  that generates
+                  and returns a Collection of Arrays. Each item in this
+                  collection is
+                  used as the parameters for the test method.
+                  
+               </p>
+               <p>
+                  You need also to create a constructor in which you store the
+                  values
+                  for each test. The number of elements in each array provided by the
+                  method annotated with
+                  <code class="code">@Parameters</code>
+                  must
+                  correspond to the number of parameters in the
+                  constructor of the
+                  class.
+                  The class is created for each parameter and the test
+                  values are
+                  passed
+                  via the constructor to the class.
+                  
+               </p>
+               <p>
+                  The following code shows an example for a parameterized test. It
+                  assume that you test the
+                  <code class="code">multiply()</code>
+                  method of the
+                  <code class="code">MyClass</code>
+                  class which was used in an example earlier.
+                  
+               </p>
+               <p>
+                  
+               </p><pre class="programlisting"><span class="hl-keyword">package</span> de.vogella.junit.first;
+
+<span class="hl-keyword">import</span> <span class="hl-keyword">static</span> org.junit.Assert.assertEquals;
+
+<span class="hl-keyword">import</span> java.util.Arrays;
+<span class="hl-keyword">import</span> java.util.Collection;
+
+<span class="hl-keyword">import</span> org.junit.Test;
+<span class="hl-keyword">import</span> org.junit.runner.RunWith;
+<span class="hl-keyword">import</span> org.junit.runners.Parameterized;
+<span class="hl-keyword">import</span> org.junit.runners.Parameterized.Parameters;
+
+<em><span class="hl-annotation" style="color: gray">@RunWith(Parameterized.class)</span></em>
+<span class="hl-keyword">public</span> <span class="hl-keyword">class</span> MyParameterizedClassTest {
+
+  <span class="hl-keyword">private</span> <span class="hl-keyword">int</span> multiplier;
+
+  <span class="hl-keyword">public</span> MyParameterizedClassTest(<span class="hl-keyword">int</span> testParameter) {
+    <span class="hl-keyword">this</span>.multiplier = number;
+  }
+
+  <em class="hl-comment" style="color: #080">// Creates the test data</em>
+  <em><span class="hl-annotation" style="color: gray">@Parameters</span></em>
+  <span class="hl-keyword">public</span> <span class="hl-keyword">static</span> Collection&lt;Object[]&gt; data() {
+    Object[][] data = <span class="hl-keyword">new</span> Object[][] { { <span class="hl-number">1</span> }, { <span class="hl-number">5</span> }, { <span class="hl-number">121</span> } };
+    <span class="hl-keyword">return</span> Arrays.asList(data);
+  }
+
+  <em><span class="hl-annotation" style="color: gray">@Test</span></em>
+  <span class="hl-keyword">public</span> <span class="hl-keyword">void</span> testMultiplyException() {
+    MyClass tester = <span class="hl-keyword">new</span> MyClass();
+    assertEquals(<span class="hl-string" style="color:blue">"Result"</span>, multiplier * multiplier,
+        tester.multiply(multiplier, multiplier));
+  }
+
+} </pre><p>
+                  
+               </p>
+               <p>If you run this test class, the test method is executed
+                  with
+                  each
+                  defined
+                  parameter. In the above example the test method is executed
+                  three times.
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="junitadvanced_rules"></a>5.2.&nbsp;Rules
+                        </h3>
+                     </div>
+                  </div>
+               </div><a class="indexterm" name="d18206e859"></a><p>
+                  Via the
+                  <code class="code">@Rule</code>
+                  annotation you can create objects which can be used and
+                  configured in
+                  your test methods. This adds more
+                  flexibility to your
+                  tests. You could
+                  for example specify which exception
+                  message
+                  your expect during
+                  execution of your test code.
+                  
+               </p>
+               <p>
+                  
+               </p><pre class="programlisting"><span class="hl-keyword">package</span> de.vogella.junit.first;
+
+<span class="hl-keyword">import</span> org.junit.Rule;
+<span class="hl-keyword">import</span> org.junit.Test;
+<span class="hl-keyword">import</span> org.junit.rules.ExpectedException;
+
+<span class="hl-keyword">public</span> <span class="hl-keyword">class</span> RuleExceptionTesterExample {
+
+  <em><span class="hl-annotation" style="color: gray">@Rule</span></em>
+  <span class="hl-keyword">public</span> ExpectedException exception = ExpectedException.none();
+
+  <em><span class="hl-annotation" style="color: gray">@Test</span></em>
+  <span class="hl-keyword">public</span> <span class="hl-keyword">void</span> throwsIllegalArgumentExceptionIfIconIsNull() {
+    exception.expect(IllegalArgumentException.<span class="hl-keyword">class</span>);
+    exception.expectMessage(<span class="hl-string" style="color:blue">"Negative value not allowed"</span>);
+    ClassToBeTested t = <span class="hl-keyword">new</span> ClassToBeTested();
+    t.methodToBeTest(-<span class="hl-number">1</span>);
+  }
+} </pre><p>
+                  
+               </p>
+               <p>
+                  JUnit provides already several useful implementations of
+                  rules. For
+                  example the
+                  <code class="code">TemporaryFolder</code>
+                  class allows to setup files and folders which are automatically
+                  removed after a test.
+                  
+               </p>
+               <p>
+                  The following code shows an example for the usage of the
+                  <code class="code">TemporaryFolder</code>
+                  implementation.
+                  
+               </p>
+               <p>
+                  
+               </p><pre class="programlisting"><span class="hl-keyword">package</span> de.vogella.junit.first;
+
+<span class="hl-keyword">import</span> <span class="hl-keyword">static</span> org.junit.Assert.assertTrue;
+
+<span class="hl-keyword">import</span> java.io.File;
+<span class="hl-keyword">import</span> java.io.IOException;
+
+<span class="hl-keyword">import</span> org.junit.Rule;
+<span class="hl-keyword">import</span> org.junit.Test;
+<span class="hl-keyword">import</span> org.junit.rules.TemporaryFolder;
+
+<span class="hl-keyword">public</span> <span class="hl-keyword">class</span> RuleTester {
+
+  <em><span class="hl-annotation" style="color: gray">@Rule</span></em>
+  <span class="hl-keyword">public</span> TemporaryFolder folder = <span class="hl-keyword">new</span> TemporaryFolder();
+
+  <em><span class="hl-annotation" style="color: gray">@Test</span></em>
+  <span class="hl-keyword">public</span> <span class="hl-keyword">void</span> testUsingTempFolder() <span class="hl-keyword">throws</span> IOException {
+    File createdFolder = folder.newFolder(<span class="hl-string" style="color:blue">"newfolder"</span>);
+    File createdFile = folder.newFile(<span class="hl-string" style="color:blue">"myfilefile.txt"</span>);
+    assertTrue(createdFile.exists());
+  }
+} </pre><p>
+                  
+               </p>
+               <p>
+                  To write your own rule you need to implement the
+                  <code class="code">TestRule</code>
+                  interface.
+                  
+               </p>
+            </div>
+         </div>
+         <!-- Lake Quincy Ads -->
+         <div class="lqm_ad" lqm_publisher="lqm.javaeclipseandroid.site" lqm_tags="Java%20Mobile%20Android" lqm_zone="ron" lqm_format="728x90"></div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title"><a name="easymock"></a>6.&nbsp;Mocking with EasyMock 
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               Unit testing uses also mocking of objects. In this case the real
+               object is replaced by a replacement which has a predefined behavior
+               the test. There are several frameworks available for mocking. To learn
+               more about mock
+               frameworks please see
+               <a class="ulink" href="http://www.vogella.com/articles/EasyMock/article.html" target="_top"> EasyMock Tutorial</a>
+               
+            </p>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title"><a name="thankyou"></a>7.&nbsp;Thank you 
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               
+               	
+            </p>
+            <p></p>
+            <p>
+               	Please help me to support this article:
+               	
+            </p>
+            <table>
+               <tbody><tr>
+                  			
+                  <td>
+                     				<a href="http://flattr.com/thing/49772/Tutorials-for-Eclipse-Java-Android-and-Webprogramming" target="_blank">
+                        					<img src="./JUnit - Tutorial_files/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0">
+                        				</a>
+                     			
+                  </td>
+                  
+                  			
+                  <td>
+                     				
+                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                        					<input type="hidden" name="cmd" value="_s-xclick">
+                        					<input type="hidden" name="hosted_button_id" value="10463995">
+                        					<input type="image" src="./JUnit - Tutorial_files/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                        					<img alt="" border="0" src="./JUnit - Tutorial_files/pixel.gif" width="1" height="1">
+                        				
+                     </form>
+                     			
+                  </td>
+                  		
+               </tr>
+            </tbody></table>
+            <p>
+               
+               
+               
+               
+            </p>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title"><a name="questions"></a>8.&nbsp;Questions and Discussion
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               Before posting questions, please see the
+               <a class="ulink" href="http://www.vogella.com/faq.html" target="_top"> vogella FAQ</a>. If you have questions or find an error in this article please
+               use the
+               <a class="ulink" href="http://groups.google.com/group/vogella" target="_top"> www.vogella.com Google Group</a>. I have created a short list
+               <a class="ulink" href="http://www.vogella.com/blog/2010/03/09/asking-community-questions/" target="_top"> how to create good questions
+                  </a> which might also help you.
+               
+            </p>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title"><a name="resources"></a>9.&nbsp;Links and Literature
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="junit_links"></a>9.1.&nbsp;JUnit Resources 
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  <a class="ulink" href="http://www.junit.org/" target="_top">
+                     http://www.junit.org/</a>
+                  JUnit Homepage
+                  
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="resources_general"></a>9.2.&nbsp;vogella Resources
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  <a class="ulink" href="http://www.vogella.com/training/overview.html" target="_top"> vogella Training </a>Android and Eclipse Training from the vogella team
+                  
+               </p>
+               <p>
+                  <a class="ulink" href="http://www.vogella.com/articles/Android/article.html" target="_top"> Android Tutorial
+                     </a> Introduction to Android Programming
+                  
+               </p>
+               <p>
+                  <a class="ulink" href="http://www.vogella.com/articles/GWT/article.html" target="_top"> GWT Tutorial
+                     </a> Program in Java and compile to JavaScript and HTML
+                  
+               </p>
+               <p>
+                  <a class="ulink" href="http://www.vogella.com/articles/EclipseRCP/article.html" target="_top"> Eclipse RCP Tutorial
+                     </a> Create native applications in Java
+                  
+               </p>
+               <p>
+                  <a class="ulink" href="./JUnit - Tutorial_files/JUnit - Tutorial.htm" target="_top"> JUnit Tutorial
+                     </a> Test your application
+                  
+               </p>
+               <p>
+                  <a class="ulink" href="http://www.vogella.com/articles/Git/article.html" target="_top"> Git Tutorial
+                     </a> Put everything you have under distributed version control system
+                  
+               </p>
+            </div>
+         </div>
+      </div>
+      
+      
+      
+   
+<div id="GOOGLE_INPUT_CHEXT_FLAG" style="display: none;" input="" input_stat="{}"></div></body></html>
