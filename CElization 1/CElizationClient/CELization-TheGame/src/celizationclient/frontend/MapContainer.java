@@ -74,8 +74,8 @@ public class MapContainer extends Group {
                 map[col][row] = new LandTile();
                 map[col][row].setOnMouseClicked(iconClickHandler);
                 mapGrid.add(map[col][row], row, col);
-//                map[col][row].setType(realMap.get(col, row).getType(username));
-                map[col][row].setType(realMap.get(col, row).getType(false, username));
+                map[col][row].setType(realMap.get(col, row).getType(username));
+//                map[col][row].setType(realMap.get(col, row).getType(false, username));
             }
         }
 
@@ -158,8 +158,8 @@ public class MapContainer extends Group {
                 currentBoatLocation = currentBoat.getLocation();
                 if (currentBoat.buildingFinished()) {
                     boatIcon = new BoatIcon(currentBoatID, currentUsername);
-                    boatIcon.setLayoutX((currentBoat.getLocation().col) * GameIcon.BLOCK_WIDTH);
-                    boatIcon.setLayoutY((currentBoat.getLocation().row) * GameIcon.BLOCK_HEIGHT);
+                    boatIcon.setLayoutX((currentBoatLocation.col) * GameIcon.BLOCK_WIDTH);
+                    boatIcon.setLayoutY((currentBoatLocation.row) * GameIcon.BLOCK_HEIGHT);
                     boatIcon.setOnMouseClicked(iconClickHandler);
                     MapContainer.this.getChildren().add(boatIcon);
                 }
