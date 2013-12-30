@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package celizationclient.frontend;
 
 import celizationclient.frontend.gameicons.CivilianIcon;
@@ -75,7 +71,6 @@ public class MapContainer extends Group {
                 map[col][row].setOnMouseClicked(iconClickHandler);
                 mapGrid.add(map[col][row], row, col);
                 map[col][row].setType(realMap.get(col, row).getType(username));
-//                map[col][row].setType(realMap.get(col, row).getType(false, username));
             }
         }
 

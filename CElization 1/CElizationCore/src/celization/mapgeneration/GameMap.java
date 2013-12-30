@@ -29,7 +29,6 @@ public class GameMap implements Serializable {
      * psudo-random algorithm for map generation
      */
     private PerlinNoiseGenerator noiseGenerator;
-    private PerlinNoiseParameters perlinNoiseParameters;
     /**
      * minimum bounding box of visible areas
      */
@@ -53,7 +52,6 @@ public class GameMap implements Serializable {
          */
         this.gameInstance = gameInstance;
         this.gameMapSize = gameMapSize;
-        this.perlinNoiseParameters = perlinNoiseParameters;
         topLefts = new HashMap<>();
         bottomRights = new HashMap<>();
         noiseGenerator = new PerlinNoiseGenerator(perlinNoiseParameters);
@@ -155,8 +153,7 @@ public class GameMap implements Serializable {
     }
 
     public boolean isWalkable(int col, int row, String username) {
-        if (row < 0 || col < 0 || row >= gameMapSize.row
-                || col >= gameMapSize.col) {
+        if (row < 0 || col < 0 || row >= gameMapSize.row || col >= gameMapSize.col) {
             return false;
         }
 
@@ -206,9 +203,7 @@ public class GameMap implements Serializable {
                 map[i][j] = new LandBlock(type, height, gameInstance.getUsersList().keySet());
             }
         }
-    }
-    
-    //        topLefts.put(username, gameMapSize.clone());
+//        topLefts.put(username, gameMapSize.clone());
 //        bottomRights.put(username, Coordinates.ZERO);
 //        for (int i = 0; i < gameMapSize.col; i++) {
 //            for (int j = 0; j < gameMapSize.row; j++) {
@@ -237,6 +232,5 @@ public class GameMap implements Serializable {
 //                    bottomRights.put(username, newBR);
 //                }
 //            }
-//        }
-
+        }
 }

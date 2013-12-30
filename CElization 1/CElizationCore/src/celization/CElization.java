@@ -71,7 +71,6 @@ public class CElization implements Serializable {
      */
     public CElization(PerlinNoiseParameters mapParameters, Coordinates mapSize) {
         gameMap = new GameMap(this, mapParameters, mapSize);
-
     }
 
     /**
@@ -365,7 +364,6 @@ public class CElization implements Serializable {
                 } catch (BuildingFullException | CannotWorkHereException e) {
                     // Client can't send such turn action
                 }
-
             } else {
                 return; // Wrong action :-? How come?
             }
