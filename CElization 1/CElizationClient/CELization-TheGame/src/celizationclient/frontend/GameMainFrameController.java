@@ -10,6 +10,7 @@ import celization.buildings.extractables.*;
 import celization.civilians.*;
 import celizationclient.backend.net.FetchChatMessages;
 import celizationclient.backend.net.NotReadyForNextTurnException;
+import celizationclient.frontend.gameicons.GameIcon;
 import celizationrequests.GameObjectID;
 import celizationrequests.turnaction.BuildingSellTurnAction;
 import celizationrequests.turnaction.BuildingTrainTurnAction;
@@ -45,6 +46,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.SplitPaneBuilder;
 import javafx.scene.control.Tab;
@@ -83,6 +85,8 @@ public class GameMainFrameController extends FormsParent implements Initializabl
     private MapContainer mapPreviewPane;
     @FXML
     private AnchorPane mapPane;
+    @FXML
+    private ScrollPane mapScrollPaneWrapper;
     @FXML
     private Label lblChatMessages;
     private HashMap<String, AnchorPane> chatBoxes;
@@ -191,6 +195,8 @@ public class GameMainFrameController extends FormsParent implements Initializabl
     private celization.GameState currentGameState;
     // changes when clicking on objects
     protected GameObjectID activeObjectID;
+    
+    private boolean shouldCenterDerp;
 
     /**
      * Initializes the controller class.
@@ -227,11 +233,12 @@ public class GameMainFrameController extends FormsParent implements Initializabl
 //                }
             }
         });
-
+        
         chatMessagesFetcherTimer = new java.util.Timer("Chat messages fetcher", true);
         chatMessagesFetcherTimer.schedule(new FetchChatMessages(super.client, this), 0, 1000);
 
         infoRefreshThread = new InfoRefreshThread();
+        shouldCenterDerp = true;
         refreshInfo();
     }
 
@@ -603,6 +610,27 @@ public class GameMainFrameController extends FormsParent implements Initializabl
         actionsTabs.getSelectionModel().select(index);
     }
 
+    protected boolean centerDerpOnMap() {
+        // Center derp on map
+        celizationrequests.Coordinates derpLocation;
+        derpLocation = currentGameState.getWorkerByUID(currentGameState.getDerpID()).getLocation();
+        try {
+            double hValue;
+            double vValue;
+            hValue = derpLocation.col * GameIcon.BLOCK_WIDTH;
+            hValue += mapPreviewPane.getWidth() / 2;
+            
+            vValue = derpLocation.row * GameIcon.BLOCK_HEIGHT;
+            vValue += mapPreviewPane.getHeight() / 2;
+            
+            mapScrollPaneWrapper.setHvalue(hValue / mapPreviewPane.getWidth());
+            mapScrollPaneWrapper.setVvalue(vValue / mapPreviewPane.getHeight());
+        } catch(NullPointerException e) {
+            return false;
+        }
+        return true;
+    }
+
     private class ChatMessagesTabsSelectionChangedHandler implements ChangeListener<Tab> {
 
         @Override
@@ -802,7 +830,14 @@ public class GameMainFrameController extends FormsParent implements Initializabl
             refreshMessagesCounter();
             refreshResourcesPage();
             checkResearches();
-            mapPreviewPane.updateMap(client);
+            mapPreviewPane.updateMap(currentGameState, client.getUsername(), client);
+            /*
+            if (shouldCenterDerp) {
+                if (centerDerpOnMap()) {
+                    shouldCenterDerp = false; // So this code runs only once
+                }
+            }
+            */
         }
     }
 }

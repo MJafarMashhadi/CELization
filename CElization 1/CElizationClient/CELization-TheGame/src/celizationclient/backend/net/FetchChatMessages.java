@@ -45,13 +45,16 @@ public class FetchChatMessages extends TimerTask {
         }
         formController.refreshMessagesCounter();
         /// update online users
-        ArrayList<String> usersList;
+        ArrayList<String> usersList = null;
         try {
-            formController.setOnlineList(client.getOnlineUsers());
+            usersList = client.getOnlineUsers();
         }catch (SocketException e){
             this.cancel();
         } catch (IOException ex) {
             Logger.getLogger(FetchChatMessages.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (usersList != null) {
+                formController.setOnlineList(usersList);
         }
     }
 }

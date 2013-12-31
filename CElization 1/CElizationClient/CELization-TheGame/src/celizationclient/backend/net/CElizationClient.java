@@ -163,7 +163,11 @@ public class CElizationClient {
     }
 
     public ArrayList<String> getOnlineUsers() throws IOException {
-        sendRequest(new celizationrequests.chat.OnlineListRequest());
+        // FIXME: server sends online lists withput a requests, change from polling mode to event-driven mode
+        if (!listenerThread.hasResponse(celizationrequests.chat.OnlineListResponse.class)) {
+            return null;
+        }
+        //sendRequest(new celizationrequests.chat.OnlineListRequest());
         int t = 0;
         while (!listenerThread.hasResponse(celizationrequests.chat.OnlineListResponse.class)) {
             t++;

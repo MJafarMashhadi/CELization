@@ -47,34 +47,27 @@ public class MapContainer extends Group {
         iconClickHandler = new IconClickHandler();
     }
 
-    public void updateMap(CElizationClient client) {
-        GameState currentGameState;
-        //
-        map = null;
-        realMap = null;
-        mapGrid.getChildren().clear();
-        //
-        try {
-            currentGameState = client.getGameState();
-        } catch (IOException ex) {
-            System.err.println("Couldn't get game state");
-            return;
-        }
-
-        String username = client.getUsername();
+    public void updateMap(GameState currentGameState, String username, CElizationClient client) {
         realMap = currentGameState.getGameMap();
 
-        map = new LandTile[realMap.getGameMapSize().col][realMap.getGameMapSize().row];
-        for (int col = 0; col < map.length; col++) {
-            for (int row = 0; row < map[col].length; row++) {
-                map[col][row] = new LandTile();
-                map[col][row].setOnMouseClicked(iconClickHandler);
-                mapGrid.add(map[col][row], row, col);
-                map[col][row].setType(realMap.get(col, row).getType(username));
+        if (map == null) {
+            map = new LandTile[realMap.getGameMapSize().col][realMap.getGameMapSize().row];
+            for (int col = 0; col < map.length; col++) {
+                for (int row = 0; row < map[col].length; row++) {
+                    map[col][row] = new LandTile();
+                    map[col][row].setOnMouseClicked(iconClickHandler);
+                    mapGrid.add(map[col][row], row, col);
+                    map[col][row].setType(realMap.get(col, row).getType(username));
+                }
+            }
+        } else {
+            for (int col = 0; col < map.length; col++) {
+                for (int row = 0; row < map[col].length; row++) {
+                    map[col][row].setType(realMap.get(col, row).getType(username));
+                }
             }
         }
 
-        // Civilians:
         HashMap<String, UserInfo> usersList;
         usersList = currentGameState.getGameInstance().getUsersList();
 
@@ -84,6 +77,7 @@ public class MapContainer extends Group {
         usersLoop:
         for (String currentUsername : usersList.keySet()) {
             currentUserGameState = usersList.get(currentUsername).getGame();
+            // Civilians:
             civiliansLoop:
             for (celization.civilians.Civilian currentCivilian : currentUserGameState.getCivilians().values()) {
                 if (currentCivilian instanceof celization.civilians.Scholar || !currentCivilian.stillAlive() || !currentCivilian.isMature()) {
@@ -166,6 +160,17 @@ public class MapContainer extends Group {
         System.gc();
     }
 
+    public double getWidth() {
+        if (map == null) {
+            System.err.println("Map is null in MapContainer.java :| Shit!");
+        }
+        return map.length * GameIcon.BLOCK_WIDTH;
+    }
+    
+    public double getHeight() {
+        return map[0].length * GameIcon.BLOCK_HEIGHT;
+    }
+    
     protected class IconClickHandler implements EventHandler<MouseEvent> {
 
         @Override

@@ -250,7 +250,7 @@
           <content>
             <AnchorPane id="Content" fx:id="mapPane" minHeight="-1.0" minWidth="-1.0" prefHeight="500.0" prefWidth="1024.0">
               <children>
-                <ScrollPane id="ScrollPane" fitToHeight="false" fitToWidth="false" hbarPolicy="NEVER" pannable="true" prefHeight="492.0" prefViewportHeight="0.0" prefViewportWidth="0.0" prefWidth="824.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <ScrollPane id="ScrollPane" fx:id="mapScrollPaneWrapper" fitToHeight="false" fitToWidth="false" hbarPolicy="NEVER" pannable="true" prefHeight="492.0" prefViewportHeight="0.0" prefViewportWidth="0.0" prefWidth="824.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <content>
                     <MapContainer fx:id="mapPreviewPane" style="-fx-background-color: #111111;" />
                   </content>
