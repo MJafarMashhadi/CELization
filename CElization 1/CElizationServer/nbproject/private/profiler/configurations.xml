@@ -87,7 +87,7 @@
 <entry key="0_profiler.settings.n.profiled.threads.limit">32</entry>
 <entry key="0_profiler.settings.cpu.profiling.type">0</entry>
 <entry key="0_profiler.settings.instrument.spawned.threads">false</entry>
-<entry key="1_profiler.settings.instrumentation.filter.selectedprofiler.simple.filter.name">Profile project &amp; subprojects classes</entry>
+<entry key="1_profiler.settings.instrumentation.filter.selectedprofiler.simple.filter.name">Profile only project classes</entry>
 <entry key="2_profiler.settings.instrumentation.marker.methods.size">0</entry>
 <entry key="0_profiler.settings.obj.alloc.stack.sampling.depth">0</entry>
 <entry key="0_profiler.settings.profilingpoints.enabled">true</entry>

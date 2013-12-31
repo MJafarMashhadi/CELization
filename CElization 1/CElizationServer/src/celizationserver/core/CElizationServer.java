@@ -240,6 +240,9 @@ public class CElizationServer implements Serializable {
                 while (continueListening) {
                     serverSock = new ServerSocket(CELizationRequest.gamesListListeningPort.intValue());
                     responderSocket = serverSock.accept();
+                    if (!continueListening) {
+                        return;
+                    }
                     oos = new ObjectOutputStream(responderSocket.getOutputStream());
                     ois = new ObjectInputStream(responderSocket.getInputStream());
                     Object input;
@@ -262,12 +265,19 @@ public class CElizationServer implements Serializable {
                     serverSock.close();
                 }
             } catch (IOException | ClassNotFoundException ex) {
+                if (serverSock.isClosed() || responderSocket.isClosed()) {
+                    return;
+                }
                 Logger.getLogger(CElizationServer.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
                 try {
+                    if (ois != null)
                     ois.close();
+                    if (oos !=null)
                     oos.close();
+                    if (responderSocket != null)
                     responderSocket.close();
+                    if (serverSock != null)
                     serverSock.close();
                 } catch (IOException e) {
                 }
