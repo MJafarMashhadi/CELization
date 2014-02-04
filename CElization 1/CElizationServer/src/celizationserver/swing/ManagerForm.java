@@ -14,15 +14,12 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
  * @author mjafar
  */
 public class ManagerForm extends javax.swing.JFrame {
+    private static final long serialVersionUID = -1081465640843076039L;
 
     private boolean showOfflineUsers = true;
     private boolean showInactiveGames = true;
@@ -475,6 +472,16 @@ public class ManagerForm extends javax.swing.JFrame {
 //        } else if (evt.getClickCount() == 2) {
         updateUsersList();
 //        }
+        if (evt.getClickCount() == 2) {
+            MapViewer v = new MapViewer();
+            Integer gamePort = getSelectedGame();
+            if (gamePort == null) {
+                return;
+            }
+            
+            v.setGame(serverInstance.getGame(gamePort).getGame());
+            v.setVisible(true);
+        }
     }//GEN-LAST:event_tblGamesMouseClicked
 
     private void lstUsersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstUsersMouseClicked
@@ -490,6 +497,7 @@ public class ManagerForm extends javax.swing.JFrame {
     private void mnuShutdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuShutdownActionPerformed
         if (shutDown()) {
             dispose();
+            System.exit(0);
         }
     }//GEN-LAST:event_mnuShutdownActionPerformed
 
@@ -503,18 +511,18 @@ public class ManagerForm extends javax.swing.JFrame {
 
     private void mnuSendToAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSendToAllActionPerformed
         SendToAllChatMessage frmSendToAll = new SendToAllChatMessage(this, true);
-        
+
         String[] gameNames = new String[tblGames.getRowCount()];
         for (int i = 0; i < gameNames.length; i++) {
             gameNames[i] = (String) tblGames.getValueAt(i, 0);
         }
         frmSendToAll.setGamesList(gameNames);
-        
+
         frmSendToAll.setVisible(true);
         if (frmSendToAll.isCancelled()) {
             return;
         }
-        
+
         String message;
         message = frmSendToAll.getMessage();
         try {
@@ -586,9 +594,9 @@ public class ManagerForm extends javax.swing.JFrame {
             serverInstance.getGame(userGamePort).removeUser(username);
         } catch (NullPointerException e) {
             // User was already deleted
-            JOptionPane.showMessageDialog(this, "User is already deleted. refresh the scene","Already deleted", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "User is already deleted. refresh the scene", "Already deleted", JOptionPane.WARNING_MESSAGE);
         }
-        
+
         refresh();
     }
 

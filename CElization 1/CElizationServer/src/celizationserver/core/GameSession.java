@@ -39,6 +39,7 @@ import javax.swing.JOptionPane;
  * @author mjafar
  */
 public class GameSession implements Serializable {
+    private static final long serialVersionUID = 4936046175409539978L;
 
     // Game data
     protected String gameName;
