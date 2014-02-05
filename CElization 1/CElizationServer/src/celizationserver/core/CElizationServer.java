@@ -28,6 +28,7 @@ import java.util.logging.Logger;
  */
 public class CElizationServer implements Serializable {
     private static final long serialVersionUID = -8554634008258696650L;
+    
     transient private GamesListResponderThread gamesListResponder;
     protected static final String saveFileAddress;
     /**

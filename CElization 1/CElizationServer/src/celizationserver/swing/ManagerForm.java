@@ -6,7 +6,10 @@ import celization.exceptions.UserExistsException;
 import celization.mapgeneration.perlinnoise.PerlinNoiseParameters;
 import celizationserver.core.CElizationServer;
 import celizationserver.core.GameSession;
+import celizationserver.core.ManagerStarter;
+import java.awt.Cursor;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,8 +22,8 @@ import javax.swing.JTable;
  * @author mjafar
  */
 public class ManagerForm extends javax.swing.JFrame {
-    private static final long serialVersionUID = -1081465640843076039L;
 
+    private static final long serialVersionUID = -1081465640843076039L;
     private boolean showOfflineUsers = true;
     private boolean showInactiveGames = true;
     private javax.swing.table.DefaultTableModel gamesModel;
@@ -73,6 +76,7 @@ public class ManagerForm extends javax.swing.JFrame {
         pnlGames = new javax.swing.JPanel();
         tblGamesScroller = new javax.swing.JScrollPane();
         tblGames = new javax.swing.JTable();
+        btnShowDetails = new javax.swing.JButton();
         pnlUsers = new javax.swing.JPanel();
         lstUseresScroller = new javax.swing.JScrollPane();
         lstUsers = new javax.swing.JList();
@@ -137,19 +141,33 @@ public class ManagerForm extends javax.swing.JFrame {
         tblGames.getColumnModel().getColumn(2).setResizable(false);
         tblGames.getColumnModel().getColumn(3).setResizable(false);
 
+        btnShowDetails.setText("Show Details");
+        btnShowDetails.setName("btnShowDetails"); // NOI18N
+        btnShowDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnShowDetailsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlGamesLayout = new javax.swing.GroupLayout(pnlGames);
         pnlGames.setLayout(pnlGamesLayout);
         pnlGamesLayout.setHorizontalGroup(
             pnlGamesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlGamesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tblGamesScroller, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+                .addGroup(pnlGamesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tblGamesScroller, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlGamesLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnShowDetails)))
                 .addContainerGap())
         );
         pnlGamesLayout.setVerticalGroup(
             pnlGamesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlGamesLayout.createSequentialGroup()
-                .addComponent(tblGamesScroller, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                .addComponent(tblGamesScroller, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnShowDetails)
                 .addContainerGap())
         );
 
@@ -178,7 +196,8 @@ public class ManagerForm extends javax.swing.JFrame {
         );
         pnlUsersLayout.setVerticalGroup(
             pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlUsersLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUsersLayout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(lstUseresScroller)
                 .addContainerGap())
         );
@@ -305,7 +324,7 @@ public class ManagerForm extends javax.swing.JFrame {
         });
         mnuGames.add(mnuRefresh);
 
-        mnuShutdown.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
+        mnuShutdown.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         mnuShutdown.setMnemonic('d');
         mnuShutdown.setText("Shut server down");
         mnuShutdown.setName("mnuShutdown"); // NOI18N
@@ -473,14 +492,9 @@ public class ManagerForm extends javax.swing.JFrame {
         updateUsersList();
 //        }
         if (evt.getClickCount() == 2) {
-            MapViewer v = new MapViewer();
-            Integer gamePort = getSelectedGame();
-            if (gamePort == null) {
+            if (showMapViewer()) {
                 return;
             }
-            
-            v.setGame(serverInstance.getGame(gamePort).getGame());
-            v.setVisible(true);
         }
     }//GEN-LAST:event_tblGamesMouseClicked
 
@@ -537,6 +551,12 @@ public class ManagerForm extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_mnuSendToAllActionPerformed
+
+    private void btnShowDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowDetailsActionPerformed
+        if (showMapViewer()) {
+            return;
+        }
+    }//GEN-LAST:event_btnShowDetailsActionPerformed
 
     private String getSelectedUsername() {
         return (String) getSelectedRow(lstUsers);
@@ -816,14 +836,28 @@ public class ManagerForm extends javax.swing.JFrame {
                 != JOptionPane.YES_OPTION) {
             return false;
         }
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        final SplashScreen splash = new SplashScreen();
         try {
+            splash.setStatus("Saving data...");
+            setVisible(false);
+            splash.setVisible(true);
+            splash.requestFocus();
+            ManagerStarter.setCenter(splash);
             saveGame();
+            splash.setStatus("Closing connections...");
             serverInstance.shutDown();
+            splash.setStatus("Finalizing...");
             return true;
         } catch (IOException ex) {
             Logger.getLogger(ManagerForm.class.getName()).log(Level.SEVERE, null, ex);
+            setVisible(true);
+            splash.setVisible(false);
             JOptionPane.showMessageDialog(null, "Failed to shut the server down.");
             return false;
+        } finally {
+            splash.setVisible(false);
+            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
     }
 
@@ -835,6 +869,7 @@ public class ManagerForm extends javax.swing.JFrame {
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnShowDetails;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JLabel lblGameName;
@@ -873,4 +908,15 @@ public class ManagerForm extends javax.swing.JFrame {
 //        super.dispose();
 //        System.exit(0);
 //    }
+
+    private boolean showMapViewer() {
+        MapViewer v = new MapViewer();
+        Integer gamePort = getSelectedGame();
+        if (gamePort == null) {
+            return true;
+        }
+        v.setGame(serverInstance.getGame(gamePort).getGame());
+        v.setVisible(true);
+        return false;
+    }
 }

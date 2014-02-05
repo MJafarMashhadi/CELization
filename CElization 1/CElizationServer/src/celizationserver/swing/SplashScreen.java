@@ -1,6 +1,8 @@
 package celizationserver.swing;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,44 +14,33 @@ import javax.swing.JLayeredPane;
  */
 public class SplashScreen extends JFrame {
 
-    private static Integer backGroundLayer = new Integer(0);
-    private static Integer firstLayer = new Integer(1);
     private static final long serialVersionUID = -6354410580917648055L;
-    private JLayeredPane layers;
-    private ImageIcon backgroundImage;
-    private JLabel backgroundContainer;
-    private JLabel initializeStatus;
+    private static Image backgroundImage = MapViewerPanel.imageRead(SplashScreen.class.getResourceAsStream("splash.png"));
+    private String status;
 
     public SplashScreen() {
         super("Splash");
-        backgroundImage = new ImageIcon(getClass().getResource("splash.png"));
-        int width = backgroundImage.getIconWidth();
-        int height = backgroundImage.getIconHeight();
+
+        int width = backgroundImage.getWidth(this);
+        int height = backgroundImage.getHeight(this);
 
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.setBounds(0, 0, width, height);
         this.setLayout(null);
         this.setResizable(false);
         this.setUndecorated(true);
-
-        backgroundContainer = new JLabel();
-        initializeStatus = new JLabel();
-
-        backgroundContainer.setIcon(backgroundImage);
-        backgroundContainer.setBounds(0, 0, width, height);
-
-        initializeStatus.setBounds(30, 635, width, 40);
-        initializeStatus.setForeground(Color.WHITE);
-
-        layers = new JLayeredPane();
-        layers.setBounds(0, 0, width, height);
-        layers.add(backgroundContainer, backGroundLayer);
-        layers.add(initializeStatus, firstLayer);
-
-        this.add(layers);
     }
 
     public void setStatus(String newStatus) {
-        initializeStatus.setText(newStatus);
+        this.status = newStatus;
+        this.repaint(0, 600, getWidth(), getHeight()-600);
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        //super.paint(g);
+        g.drawImage(backgroundImage, 0, 0, this);
+        g.setColor(Color.WHITE);
+        g.drawString(status, 30, 645);
     }
 }

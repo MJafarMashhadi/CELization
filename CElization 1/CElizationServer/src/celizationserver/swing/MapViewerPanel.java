@@ -30,8 +30,9 @@ import javax.imageio.ImageIO;
 public final class MapViewerPanel extends javax.swing.JPanel {
 
     private celization.CElization game;
-    private double zoomScale = 1.0;
-    private int cellSize = 36;
+    private String viewFromUserEye = "<Global>";
+    private double zoomScale = 0.25;
+    private int cellSize = 32;
     private double radic_2 = Math.sqrt(2.0);
     private Point mousePosition = new Point(0, 0);
     private boolean mouseOnMap = false;
@@ -57,6 +58,7 @@ public final class MapViewerPanel extends javax.swing.JPanel {
     public static final Image PORT = imageRead(MapViewerPanel.class.getResourceAsStream("gameicons/Port.png"));
     public static final Image BARRACKS = imageRead(MapViewerPanel.class.getResourceAsStream("gameicons/Barracks.png"));
     public static final Image STABLE = imageRead(MapViewerPanel.class.getResourceAsStream("gameicons/Stable.png"));
+    public static final Image UNKNOWN = imageRead(MapViewerPanel.class.getResourceAsStream("gameicons/BlackTile.png"));
 
     static {
         CIVILIAN = new Image[16];
@@ -179,7 +181,10 @@ public final class MapViewerPanel extends javax.swing.JPanel {
             zoomIn();
         } else if ((mapViewer.selectedTool == MapViewer.SelectedTool.ZOOM_OUT && !evt.isAltDown())
                 || (mapViewer.selectedTool == MapViewer.SelectedTool.ZOOM_IN && evt.isAltDown())) {
-            zoomOut();
+            if (!(game.getGameMap().getGameMapSize().col * cellSize * zoomScale < mapViewer.scroller.getSize().width
+                    && game.getGameMap().getGameMapSize().row * cellSize * zoomScale < mapViewer.scroller.getSize().height)) {
+                zoomOut();
+            }
         }
         if (mapViewer.selectedTool == MapViewer.SelectedTool.ZOOM_OUT
                 || mapViewer.selectedTool == MapViewer.SelectedTool.ZOOM_IN) {
@@ -192,29 +197,32 @@ public final class MapViewerPanel extends javax.swing.JPanel {
 
     private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
         mouseOnMap = true;
-        this.repaint(evt.getX(), evt.getY(), evt.getX() + cellSize, evt.getY() + cellSize);
+        int size = (int) (cellSize * zoomScale);
+        this.repaint(evt.getX() - size, evt.getY() - size, evt.getX() + 3 * size, evt.getY() + 3 * size);
     }//GEN-LAST:event_formMouseEntered
 
     private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
         mouseOnMap = true;
-        this.repaint(evt.getX(), evt.getY(), evt.getX() + cellSize, evt.getY() + cellSize);
+        int size = (int) (cellSize * zoomScale);
+        this.repaint(evt.getX() - size, evt.getY() - size, evt.getX() + 3 * size, evt.getY() + 3 * size);
     }//GEN-LAST:event_formMouseExited
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
-        mousePosition.setLocation(evt.getX(), evt.getY());
+        Point oldMousePosition = (Point) mousePosition.clone();
+        mousePosition.x = evt.getX();
+        mousePosition.y = evt.getY();
+
         int col = (int) (mousePosition.x / (int) (cellSize * zoomScale));
         int row = (int) (mousePosition.y / (int) (cellSize * zoomScale));
-        int cellSizeZoomed = (int) (cellSize * zoomScale);
+//        int cellSizeZoomed = (int) (cellSize * zoomScale);
 
         try {
             LandBlock thisBlock = game.getGameMap().get(col, row);
             this.mapViewer.setResources(thisBlock.getResources(), thisBlock.getType());
         } catch (IndexOutOfBoundsException e) {
         }
-        Rectangle mapRectangle = new Rectangle(Math.max(0, evt.getX() - cellSizeZoomed), Math.max(0, evt.getY() - cellSizeZoomed), cellSizeZoomed * 3, cellSizeZoomed * 3);
-        this.repaint(mapRectangle);
-
-
+        this.repaint(getBlockUnderMouse(oldMousePosition, 3));
+        this.repaint(getBlockUnderMouse(mousePosition, 3));
     }//GEN-LAST:event_formMouseMoved
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -236,13 +244,19 @@ public final class MapViewerPanel extends javax.swing.JPanel {
         GameMap map = game.getGameMap();
         for (int c = 0; c < map.getGameMapSize().col; ++c) {
             for (int r = 0; r < map.getGameMapSize().row; ++r) {
-                Image img = getImage(map.get(c, r).getType());
+                BlockType type;
+                if ("<Global>".equalsIgnoreCase(viewFromUserEye)) {
+                    type = map.get(c, r).getType();
+                } else {
+                    type = map.get(c, r).getType(viewFromUserEye);
+                }
+                Image img = getImage(type);
 
                 int sourceWidth = img.getWidth(this);
                 int sourceHeight = img.getHeight(this);
                 int sourceSize = Math.min(sourceHeight, sourceWidth);
 
-                if (map.get(c, r).getType() == BlockType.MOUNTAIN) {
+                if (type == BlockType.MOUNTAIN) {
                     g.drawImage(MapViewerPanel.PLAIN,
                             c * targetSize, r * targetSize, (c + 1) * targetSize, (r + 1) * targetSize,
                             0, 0, sourceSize, sourceSize, this);
@@ -259,65 +273,18 @@ public final class MapViewerPanel extends javax.swing.JPanel {
             row = (int) Math.floor(mousePosition.getY() / targetSize);
             col = (int) Math.floor(mousePosition.getX() / targetSize);
 
-            g2d.setColor(new Color(250, 250, 250, 80));
+            g2d.setColor(new Color(250, 250, 250, 20));
             g2d.fillRect(col * targetSize, row * targetSize, targetSize, targetSize);
         }
 
         if (showUnits) {
-
-            for (UserInfo ui : game.getUsersList().values()) {
-                GameState gameState = ui.getGame();
-                for (Boat b : gameState.getBoats().values()) {
-                    g.drawImage(Boat, b.getLocation().col * targetSize, b.getLocation().row * targetSize, targetSize, targetSize, this);
-                    g.drawString(ui.getUsername(), targetSize * b.getLocation().col - targetSize / 2, targetSize * (b.getLocation().row + 1));
+            if ("<Global>".equalsIgnoreCase(viewFromUserEye)) {
+                for (UserInfo ui : game.getUsersList().values()) {
+                    GameState gameState = ui.getGame();
+                    paintUnitsOfUser(gameState, g, targetSize, ui);
                 }
-
-                for (Civilian c : gameState.getCivilians().values()) {
-                    if (c.getName().equals("derp")) {
-                        g.drawImage(DERP, c.getLocation().col * targetSize, c.getLocation().row * targetSize, targetSize, targetSize, this);
-                    } else {
-                        g.drawImage(CIVILIAN[c.getOutfitNumber()], c.getLocation().col * targetSize, c.getLocation().row * targetSize, targetSize, targetSize, this);
-                    }
-                    g.drawString(ui.getUsername(), targetSize * c.getLocation().col - targetSize / 2, targetSize * (c.getLocation().row + 1));
-                }
-
-                for (Building b : gameState.getBuildings().values()) {
-                    Image img = null;
-                    int size = b.size.row;
-                    int r = b.getLocation().row;
-                    int c = b.getLocation().col;
-
-                    if (!b.buildBuildingFinished()) {
-                        img = INCOMPLETE_BUILDINGS[size];
-                    } else {
-                        if (b instanceof celization.buildings.HeadQuarters) {
-                            img = HQ;
-                        } else if (b instanceof celization.buildings.University) {
-                            img = UNIVERSITY;
-                        } else if (b instanceof celization.buildings.extractables.GoldMine) {
-                            img = GOLD_MINE;
-                        } else if (b instanceof celization.buildings.extractables.StoneMine) {
-                            img = STONE_MINE;
-                        } else if (b instanceof celization.buildings.extractables.Farm) {
-                            img = FARM;
-                        } else if (b instanceof celization.buildings.extractables.WoodCamp) {
-                            img = WOOD_CAMP;
-                        } else if (b instanceof celization.buildings.Stable) {
-                            img = STABLE;
-                        } else if (b instanceof celization.buildings.Barracks) {
-                            img = BARRACKS;
-                        } else if (b instanceof celization.buildings.Port) {
-                            img = PORT;
-                        } else if (b instanceof celization.buildings.Market) {
-                            img = MARKET;
-                        } else if (b instanceof celization.buildings.Storage) {
-                            img = STORAGE;
-                        }
-                    }
-
-                    g.drawImage(img, c * targetSize, r * targetSize, (c + size) * targetSize, (r + size) * targetSize, this);
-                    g.drawString(ui.getUsername(), targetSize * c - targetSize / 2, targetSize * (r + 1));
-                }
+            } else {
+                paintUnitsOfUser(game.getUsersList().get(viewFromUserEye).getGame(), g, targetSize, game.getUsersList().get(viewFromUserEye));
             }
         }
     }
@@ -327,6 +294,7 @@ public final class MapViewerPanel extends javax.swing.JPanel {
         this.setPreferredSize(new Dimension(
                 (int) (mapSize.col * this.zoomScale * cellSize),
                 (int) (mapSize.row * this.zoomScale * cellSize)));
+        mapViewer.scroller.scrollRectToVisible(new Rectangle(mousePosition.x - mapViewer.scroller.getWidth() / 2, mousePosition.y - mapViewer.scroller.getHeight() / 2, mapViewer.scroller.getWidth() / 2, mapViewer.scroller.getHeight() / 2));
         mapViewer.scroller.updateUI();
     }
 
@@ -358,7 +326,7 @@ public final class MapViewerPanel extends javax.swing.JPanel {
             case JUNGLE:
                 return MapViewerPanel.FOREST;
         }
-        return null;
+        return MapViewerPanel.UNKNOWN;
     }
 
     void setMapViewerInstance(MapViewer mapViewer) {
@@ -368,5 +336,74 @@ public final class MapViewerPanel extends javax.swing.JPanel {
     void setShowUnits(boolean showUnits) {
         this.showUnits = showUnits;
         this.repaint();
+    }
+
+    void setView(String username) {
+        viewFromUserEye = username;
+        this.repaint();
+    }
+
+    private void paintUnitsOfUser(GameState gameState, Graphics g, int targetSize, UserInfo ui) {
+        for (Boat b : gameState.getBoats().values()) {
+            g.drawImage(Boat, b.getLocation().col * targetSize, b.getLocation().row * targetSize, targetSize, targetSize, this);
+            g.drawString(ui.getUsername(), targetSize * b.getLocation().col - targetSize / 2, targetSize * (b.getLocation().row + 1));
+        }
+
+        for (Civilian c : gameState.getCivilians().values()) {
+            if (c.getName().equals("derp")) {
+                g.drawImage(DERP, c.getLocation().col * targetSize, c.getLocation().row * targetSize, targetSize, targetSize, this);
+            } else {
+                g.drawImage(CIVILIAN[c.getOutfitNumber()], c.getLocation().col * targetSize, c.getLocation().row * targetSize, targetSize, targetSize, this);
+            }
+            g.drawString(ui.getUsername(), targetSize * c.getLocation().col - targetSize / 2, targetSize * (c.getLocation().row + 1));
+        }
+
+        for (Building b : gameState.getBuildings().values()) {
+            Image img = null;
+            int size = b.size.row;
+            int r = b.getLocation().row;
+            int c = b.getLocation().col;
+
+            if (!b.buildBuildingFinished()) {
+                img = INCOMPLETE_BUILDINGS[size];
+            } else {
+                if (b instanceof celization.buildings.HeadQuarters) {
+                    img = HQ;
+                } else if (b instanceof celization.buildings.University) {
+                    img = UNIVERSITY;
+                } else if (b instanceof celization.buildings.extractables.GoldMine) {
+                    img = GOLD_MINE;
+                } else if (b instanceof celization.buildings.extractables.StoneMine) {
+                    img = STONE_MINE;
+                } else if (b instanceof celization.buildings.extractables.Farm) {
+                    img = FARM;
+                } else if (b instanceof celization.buildings.extractables.WoodCamp) {
+                    img = WOOD_CAMP;
+                } else if (b instanceof celization.buildings.Stable) {
+                    img = STABLE;
+                } else if (b instanceof celization.buildings.Barracks) {
+                    img = BARRACKS;
+                } else if (b instanceof celization.buildings.Port) {
+                    img = PORT;
+                } else if (b instanceof celization.buildings.Market) {
+                    img = MARKET;
+                } else if (b instanceof celization.buildings.Storage) {
+                    img = STORAGE;
+                }
+            }
+
+            g.drawImage(img, c * targetSize, r * targetSize, (c + size) * targetSize, (r + size) * targetSize, this);
+            g.drawString(ui.getUsername(), targetSize * c - targetSize / 2, targetSize * (r + 1));
+        }
+    }
+
+    private Rectangle getBlockUnderMouse(Point mousePosition, int w) {
+        double zoomedCellSize = (cellSize * zoomScale);
+        int centerCol = (int) (mousePosition.x / zoomedCellSize);
+        int centerRow = (int) (mousePosition.y / zoomedCellSize);
+
+        Rectangle repaintArea = new Rectangle((int) ((centerCol - w / 2) * zoomedCellSize), (int) ((centerRow - w / 2) * zoomedCellSize), w, w);
+
+        return repaintArea;
     }
 }

@@ -3,6 +3,11 @@ package celizationserver.swing;
 import celization.GameState;
 import celization.NaturalResources;
 import celization.mapgeneration.GameMap;
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.basic.BasicListUI;
 
 /**
  *
@@ -11,11 +16,13 @@ import celization.mapgeneration.GameMap;
 public final class MapViewer extends javax.swing.JFrame {
 
     enum SelectedTool {
+
         SELECT,
         ZOOM_IN,
         ZOOM_OUT
     }
     public SelectedTool selectedTool = SelectedTool.SELECT;
+    private DefaultListModel viewTypesModel = new DefaultListModel();
 
     /**
      * Creates new form MapViewer
@@ -23,6 +30,13 @@ public final class MapViewer extends javax.swing.JFrame {
     public MapViewer() {
         initComponents();
         mapViewerPanel.setMapViewerInstance(this);
+        mapViewerPanel.setShowUnits(btnShowUnits.isSelected());
+        lstViewTypes.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                mapViewerPanel.setView(lstViewTypes.getSelectedValue().toString());
+            }
+        });
     }
 
     public MapViewer(celization.CElization game) {
@@ -32,6 +46,12 @@ public final class MapViewer extends javax.swing.JFrame {
 
     public void setGame(celization.CElization game) {
         this.mapViewerPanel.setGame(game);
+        viewTypesModel.clear();
+        viewTypesModel.add(0, "<Global>");
+        int i = 1;
+        for (String username : game.getUsersList().keySet()) {
+            viewTypesModel.add(i++, username);
+        }
     }
 
     /**
@@ -62,20 +82,26 @@ public final class MapViewer extends javax.swing.JFrame {
         btnZoomIn = new javax.swing.JToggleButton();
         btnZoomOut = new javax.swing.JToggleButton();
         btnShowUnits = new javax.swing.JToggleButton();
+        jLabel6 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lstViewTypes = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Map Viewer");
         setLocationByPlatform(true);
 
+        scroller.setAutoscrolls(true);
+        scroller.setDoubleBuffered(true);
+
         javax.swing.GroupLayout mapViewerPanelLayout = new javax.swing.GroupLayout(mapViewerPanel);
         mapViewerPanel.setLayout(mapViewerPanelLayout);
         mapViewerPanelLayout.setHorizontalGroup(
             mapViewerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 636, Short.MAX_VALUE)
+            .addGap(0, 590, Short.MAX_VALUE)
         );
         mapViewerPanelLayout.setVerticalGroup(
             mapViewerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 454, Short.MAX_VALUE)
+            .addGap(0, 434, Short.MAX_VALUE)
         );
 
         scroller.setViewportView(mapViewerPanel);
@@ -115,8 +141,8 @@ public final class MapViewer extends javax.swing.JFrame {
                             .addComponent(jLabel5))
                         .addGap(22, 22, 22)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblGold, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
-                            .addComponent(lblType, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(lblGold, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblType, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
@@ -124,9 +150,9 @@ public final class MapViewer extends javax.swing.JFrame {
                             .addComponent(jLabel2))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblFood, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblWood, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblStone, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(lblFood, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblWood, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblStone, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -193,6 +219,7 @@ public final class MapViewer extends javax.swing.JFrame {
         });
         jToolBar1.add(btnZoomOut);
 
+        btnShowUnits.setSelected(true);
         btnShowUnits.setText("Show Units");
         btnShowUnits.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -200,17 +227,24 @@ public final class MapViewer extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setText("View of map:");
+
+        lstViewTypes.setModel(viewTypesModel);
+        jScrollPane1.setViewportView(lstViewTypes);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(scroller, javax.swing.GroupLayout.DEFAULT_SIZE, 592, Short.MAX_VALUE)
+                .addComponent(scroller, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnShowUnits))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnShowUnits)
+                    .addComponent(jLabel6)
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
             .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -220,11 +254,15 @@ public final class MapViewer extends javax.swing.JFrame {
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scroller, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                    .addComponent(scroller)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnShowUnits)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -253,7 +291,6 @@ public final class MapViewer extends javax.swing.JFrame {
     private void btnShowUnitsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowUnitsActionPerformed
         mapViewerPanel.setShowUnits(btnShowUnits.isSelected());
     }//GEN-LAST:event_btnShowUnitsActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton btnSelect;
     private javax.swing.JToggleButton btnShowUnits;
@@ -265,13 +302,16 @@ public final class MapViewer extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblFood;
     private javax.swing.JLabel lblGold;
     private javax.swing.JLabel lblStone;
     private javax.swing.JLabel lblType;
     private javax.swing.JLabel lblWood;
+    private javax.swing.JList lstViewTypes;
     private celizationserver.swing.MapViewerPanel mapViewerPanel;
     protected javax.swing.JScrollPane scroller;
     // End of variables declaration//GEN-END:variables
