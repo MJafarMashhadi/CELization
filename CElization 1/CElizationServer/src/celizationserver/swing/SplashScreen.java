@@ -1,6 +1,7 @@
 package celizationserver.swing;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -24,6 +25,7 @@ public class SplashScreen extends JFrame {
         int width = backgroundImage.getWidth(this);
         int height = backgroundImage.getHeight(this);
 
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.setBounds(0, 0, width, height);
         this.setLayout(null);

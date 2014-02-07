@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package celizationserver.swing;
 
 import celization.GameParameters;
@@ -9,7 +5,7 @@ import celization.GameState;
 import celization.NaturalResources;
 import celization.UserInfo;
 import celization.civilians.Worker;
-import celizationserver.core.ManagerStarter;
+import celizationserver.core.Starter;
 
 /**
  *
@@ -62,7 +58,7 @@ public class UserInfoForm extends javax.swing.JDialog {
         };
 
         initComponents();
-        ManagerStarter.setCenter(this);
+        Starter.setCenter(this);
     }
 
     @SuppressWarnings("empty-statement")
@@ -170,10 +166,11 @@ public class UserInfoForm extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("User info");
+        setType(java.awt.Window.Type.UTILITY);
 
         lblInfoDesc.setText("User information ");
 
-        lblUsername.setFont(new java.awt.Font("Cantarell", 1, 13)); // NOI18N
+        lblUsername.setFont(FontsLoader.userNameFont);
         lblUsername.setText("USERNAME");
 
         pnlResouces.setBorder(javax.swing.BorderFactory.createTitledBorder("Resources"));
@@ -303,7 +300,7 @@ public class UserInfoForm extends javax.swing.JDialog {
                 .addGroup(pnlPeopleAndBuildingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

@@ -256,7 +256,7 @@ public class CElizationServer implements Serializable {
                             for (Integer port : games.keySet()) {
                                 response.put(games.get(port).getName(), port);
                             }
-                            oos.writeObject(response);
+                            oos.writeUnshared(response);
                             oos.flush();
                             System.err.println(" << Games list");
                         }

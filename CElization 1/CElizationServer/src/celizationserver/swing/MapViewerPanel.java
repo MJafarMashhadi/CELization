@@ -360,7 +360,7 @@ public final class MapViewerPanel extends javax.swing.JPanel {
 
         for (Building b : gameState.getBuildings().values()) {
             Image img = null;
-            int size = b.size.row;
+            int size = b.getSize().row;
             int r = b.getLocation().row;
             int c = b.getLocation().col;
 

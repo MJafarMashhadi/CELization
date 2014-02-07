@@ -6,7 +6,7 @@ package celizationserver.swing;
 
 import celizationrequests.Coordinates;
 import celization.mapgeneration.perlinnoise.PerlinNoiseParameters;
-import celizationserver.core.ManagerStarter;
+import celizationserver.core.Starter;
 import javax.swing.JOptionPane;
 
 /**
@@ -34,7 +34,7 @@ public class NewGame extends javax.swing.JDialog {
                 previewDialogue.setVisible(true);
             }
         });
-        ManagerStarter.setCenter(this);
+        Starter.setCenter(this);
     }
 
     public boolean isCancelled() {

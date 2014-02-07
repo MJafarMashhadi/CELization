@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package celizationserver.core;
 
 import java.io.IOException;
@@ -15,17 +10,17 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
- * Listener for each game, runs a CELizationServerUserConnectionListener for
+ * Listener for each game, runs a UserConnectionListener for
  * each connection
  */
-class CELizationServerListenerThread extends Thread {
+class ServerListenerThread extends Thread {
     /**
      * users connections data
      */
     private ExecutorService threadsExecutor = Executors.newCachedThreadPool();
     private final GameSession gameSessionInstance;
 
-    public CELizationServerListenerThread(final GameSession gameSessionInstance) {
+    public ServerListenerThread(final GameSession gameSessionInstance) {
         super("Server Listener Thread (" + gameSessionInstance.gameName + ")");
         this.gameSessionInstance = gameSessionInstance;
     }
@@ -37,7 +32,7 @@ class CELizationServerListenerThread extends Thread {
             try {
                 Socket newConnectionSocket;
                 newConnectionSocket = gameSessionInstance.serverListenerSocket.accept();
-                threadsExecutor.execute(new CELizationServerUserConnectionListener(newConnectionSocket, gameSessionInstance));
+                threadsExecutor.execute(new UserConnectionListener(newConnectionSocket, gameSessionInstance));
             } catch (java.net.SocketException ex) {
             } catch (IOException ex) {
                 Logger.getLogger(GameSession.class.getName()).log(Level.SEVERE, null, ex);
@@ -48,7 +43,7 @@ class CELizationServerListenerThread extends Thread {
 
     public synchronized void stopServer() {
         gameSessionInstance.closeConnection = true;
-        Iterator<CELizationServerUserConnectionListener> itr;
+        Iterator<UserConnectionListener> itr;
         itr = gameSessionInstance.onlineUsers.values().iterator();
         while (itr.hasNext()) {
             itr.next().kill();

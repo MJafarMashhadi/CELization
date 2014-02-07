@@ -1,6 +1,6 @@
 package celizationserver.core;
 
-import celization.NaturalResources;
+import celization.GameState;
 import celizationrequests.authentication.AuthenticationReportPacket;
 import celizationrequests.authentication.AuthenticationRequest;
 import celizationrequests.authentication.LogoutPacket;
@@ -9,6 +9,7 @@ import celizationrequests.chat.ChatMessagePacket;
 import celizationrequests.chat.OnlineListRequest;
 import celizationrequests.chat.OnlineListResponse;
 import celizationrequests.information.GetInformationPacket;
+import celizationrequests.turnaction.ClearToSendNewTurnsAction;
 import celizationrequests.turnaction.TurnActionsRequest;
 import celizationrequests.turnaction.TurnEvents;
 import java.io.IOException;
@@ -22,7 +23,7 @@ import javax.swing.JOptionPane;
 /**
  * Listener/Responder for each user
  */
-class CELizationServerUserConnectionListener implements Runnable {
+class UserConnectionListener implements Runnable {
 
     private Socket connection;
     private ObjectOutputStream outputStream;
@@ -32,7 +33,7 @@ class CELizationServerUserConnectionListener implements Runnable {
     private String username;
     private final GameSession gameSessionInstance;
 
-    public CELizationServerUserConnectionListener(Socket connection, final GameSession gameSessionInstance) {
+    public UserConnectionListener(Socket connection, final GameSession gameSessionInstance) {
         this.gameSessionInstance = gameSessionInstance;
         this.connection = connection;
         _continue = true;
@@ -40,12 +41,18 @@ class CELizationServerUserConnectionListener implements Runnable {
     }
 
     public synchronized void kill() {
+        _continue = false;
+        loggedIn = false;
         try {
             outputStream.close();
+        } catch (IOException ex) {
+        }
+        try {
             inputStream.close();
+        } catch (IOException ex) {
+        }
+        try {
             connection.close();
-            _continue = false;
-            loggedIn = false;
         } catch (IOException ex) {
         }
         if (gameSessionInstance.getOnlineUsers().containsKey(username)) {
@@ -60,7 +67,7 @@ class CELizationServerUserConnectionListener implements Runnable {
             outputStream = new ObjectOutputStream(connection.getOutputStream());
             inputStream = new ObjectInputStream(connection.getInputStream());
         } catch (IOException ex) {
-            Logger.getLogger(GameSession.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserConnectionListener.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Couldn't make input/output streams. User connection failed.", "Failed to get streams", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -73,26 +80,26 @@ class CELizationServerUserConnectionListener implements Runnable {
                 inputType = input.getClass();
                 //
                 if (!loggedIn && inputType != AuthenticationRequest.class) {
-                    System.err.println("Not logged in. Bad packet recieved. Shutting thread down.");
+                    System.out.println("Not logged in. Bad packet recieved. Shutting thread down.");
                     this.kill();
                     break;
                 }
                 if (inputType == AuthenticationRequest.class) {
-                    System.err.println(" >> Login packet");
+                    System.out.println(" >> Login packet");
                     authenticateUser((AuthenticationRequest) input);
                 } else if (inputType == ChatMessagePacket.class) {
-                    System.err.printf("%s >> %s chat message\n", username, ((ChatMessagePacket) input).getReciever());
+                    System.out.printf("%s >> %s chat message\n", username, ((ChatMessagePacket) input).getReciever());
                     gameSessionInstance.sendMessage(username, ((ChatMessagePacket) input).getReciever(), ((ChatMessagePacket) input).getMessage());
                 } else if (inputType == GetInformationPacket.class) {
-                    System.err.printf("%s >> Get information\n", username);
+                    System.out.printf("%s >> Get information\n", username);
                     sendObject(gameSessionInstance.game.getUsersList().get(username).getGame());
                 } else if (inputType == OnlineListRequest.class) {
-                    System.err.printf("%s >> Get online users list\n", username);
+                    System.out.printf("%s >> Get online users list\n", username);
                     OnlineListResponse response = new OnlineListResponse();
                     response.addAll(gameSessionInstance.getOnlineUsers().keySet());
                     sendObject(response);
                 } else if (inputType == TurnActionsRequest.class) {
-                    System.err.printf("%s >> Turn actions\n", username);
+                    System.out.printf("%s >> Turn actions\n", username);
                     if (gameSessionInstance.getTurnManager().canSendTurnRequest(username)) {
                         gameSessionInstance.game.processRequests(username, (TurnActionsRequest) input);
                         sendObject(new TurnEvents(gameSessionInstance.game.getEvents(username)));
@@ -103,7 +110,7 @@ class CELizationServerUserConnectionListener implements Runnable {
                         //  It's not your turn dude
                     }
                 } else if (inputType == LogoutPacket.class) {
-                    System.err.printf("%s >> Logout packet\n", username);
+                    System.out.printf("%s >> Logout packet\n", username);
                     gameSessionInstance.getTurnManager().removeUser(username);
                     checkTurnCompletion();
                     loggedIn = false;
@@ -115,6 +122,12 @@ class CELizationServerUserConnectionListener implements Runnable {
                 }
             } catch (IOException | ClassNotFoundException ex) {
                 // Unsupported request
+                if ("Connection reset".equalsIgnoreCase(ex.getMessage())) {
+                    System.err.println("Connection closed unexpectedly");
+                    this.kill();
+                } else {
+                    Logger.getLogger(UserConnectionListener.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
@@ -155,15 +168,22 @@ class CELizationServerUserConnectionListener implements Runnable {
 
     protected void sendObject(Object response) {
         try {
-            outputStream.writeObject(response);
+            outputStream.writeUnshared(response);
             outputStream.flush();
-            System.err.println(username + " << " + response.getClass().getSimpleName());
+            outputStream.reset();
+            System.out.printf(
+                    "%s << %s%s\n",
+                    username,
+                    response.getClass().getSimpleName(), 
+                    response instanceof GameState ? String.format(" (turn = %s)", ((GameState) response).getTurnNumber()) : 
+                    response instanceof ClearToSendNewTurnsAction ? String.format(" (turn = %s)", ((ClearToSendNewTurnsAction) response).getThisTurnNumber()) : "");
         } catch (java.net.SocketException e) {
             if (e.getMessage().toLowerCase().contains("broken pipe") || e.getMessage().toLowerCase().contains("connection reset")) {
-                kill();
                 System.err.println("Connection was already closed by user");
+                kill();
             }
-        } catch (IOException e) {
+        } catch (IOException ex) {
+            Logger.getLogger(UserConnectionListener.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

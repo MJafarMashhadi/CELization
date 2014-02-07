@@ -6,7 +6,7 @@ import celization.exceptions.UserExistsException;
 import celization.mapgeneration.perlinnoise.PerlinNoiseParameters;
 import celizationserver.core.CElizationServer;
 import celizationserver.core.GameSession;
-import celizationserver.core.ManagerStarter;
+import celizationserver.core.Starter;
 import java.awt.Cursor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -76,10 +76,12 @@ public class ManagerForm extends javax.swing.JFrame {
         pnlGames = new javax.swing.JPanel();
         tblGamesScroller = new javax.swing.JScrollPane();
         tblGames = new javax.swing.JTable();
-        btnShowDetails = new javax.swing.JButton();
+        btnShowGameDetails = new javax.swing.JButton();
+        btnDebugConsole = new javax.swing.JButton();
         pnlUsers = new javax.swing.JPanel();
         lstUseresScroller = new javax.swing.JScrollPane();
         lstUsers = new javax.swing.JList();
+        btnShowUserDetails = new javax.swing.JButton();
         pnlGameDetails = new javax.swing.JPanel();
         lblTurnsDesc = new javax.swing.JLabel();
         lblTurns = new javax.swing.JLabel();
@@ -141,11 +143,19 @@ public class ManagerForm extends javax.swing.JFrame {
         tblGames.getColumnModel().getColumn(2).setResizable(false);
         tblGames.getColumnModel().getColumn(3).setResizable(false);
 
-        btnShowDetails.setText("Show Details");
-        btnShowDetails.setName("btnShowDetails"); // NOI18N
-        btnShowDetails.addActionListener(new java.awt.event.ActionListener() {
+        btnShowGameDetails.setText("Show Details");
+        btnShowGameDetails.setName("btnShowGameDetails"); // NOI18N
+        btnShowGameDetails.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnShowDetailsActionPerformed(evt);
+                btnShowGameDetailsActionPerformed(evt);
+            }
+        });
+
+        btnDebugConsole.setText("Open Debug Console");
+        btnDebugConsole.setName("btnDebugConsole"); // NOI18N
+        btnDebugConsole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDebugConsoleActionPerformed(evt);
             }
         });
 
@@ -156,18 +166,22 @@ public class ManagerForm extends javax.swing.JFrame {
             .addGroup(pnlGamesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlGamesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tblGamesScroller, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                    .addComponent(tblGamesScroller, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlGamesLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnShowDetails)))
+                        .addComponent(btnDebugConsole)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnShowGameDetails)))
                 .addContainerGap())
         );
         pnlGamesLayout.setVerticalGroup(
             pnlGamesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlGamesLayout.createSequentialGroup()
-                .addComponent(tblGamesScroller, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(tblGamesScroller, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnShowDetails)
+                .addGroup(pnlGamesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnShowGameDetails)
+                    .addComponent(btnDebugConsole))
                 .addContainerGap())
         );
 
@@ -185,20 +199,34 @@ public class ManagerForm extends javax.swing.JFrame {
         });
         lstUseresScroller.setViewportView(lstUsers);
 
+        btnShowUserDetails.setText("Show Details");
+        btnShowUserDetails.setName("btnShowUserDetails"); // NOI18N
+        btnShowUserDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnShowUserDetailsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlUsersLayout = new javax.swing.GroupLayout(pnlUsers);
         pnlUsers.setLayout(pnlUsersLayout);
         pnlUsersLayout.setHorizontalGroup(
             pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlUsersLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lstUseresScroller, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addGroup(pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lstUseresScroller, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUsersLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnShowUserDetails)))
                 .addContainerGap())
         );
         pnlUsersLayout.setVerticalGroup(
             pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUsersLayout.createSequentialGroup()
+            .addGroup(pnlUsersLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lstUseresScroller)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnShowUserDetails)
                 .addContainerGap())
         );
 
@@ -552,11 +580,34 @@ public class ManagerForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_mnuSendToAllActionPerformed
 
-    private void btnShowDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowDetailsActionPerformed
+    private void btnShowGameDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowGameDetailsActionPerformed
         if (showMapViewer()) {
             return;
         }
-    }//GEN-LAST:event_btnShowDetailsActionPerformed
+    }//GEN-LAST:event_btnShowGameDetailsActionPerformed
+
+    private void btnShowUserDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowUserDetailsActionPerformed
+        showUserDetails();
+    }//GEN-LAST:event_btnShowUserDetailsActionPerformed
+
+    private void btnDebugConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDebugConsoleActionPerformed
+        Integer gamePort = getSelectedGame();
+        if (serverInstance.getGame(gamePort) != null) {
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            DebugConsole v = new DebugConsole();
+            v.setGame(serverInstance.getGame(gamePort));
+            setCursor(Cursor.getDefaultCursor());
+            // Set position
+            if (v.getWidth() + 5 < this.getX()) {
+                v.setLocation(this.getX() - v.getWidth() - 5, this.getY());
+            } else if (this.getWidth() + this.getX() + 5 + v.getWidth() <= Starter.screenSize.width) {
+                v.setLocation(this.getWidth() + this.getX() + 5, this.getY());
+            }
+            v.setSize(v.getWidth(), this.getHeight());
+            //
+            v.setVisible(true);
+        }
+    }//GEN-LAST:event_btnDebugConsoleActionPerformed
 
     private String getSelectedUsername() {
         return (String) getSelectedRow(lstUsers);
@@ -586,12 +637,14 @@ public class ManagerForm extends javax.swing.JFrame {
     }
 
     private void showUserDetails() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         String username = getSelectedUsername();
         if (username == null) {
             return;
         }
         UserInfoForm frmUserInfo = new UserInfoForm(this, false);
         frmUserInfo.setUserInfo(serverInstance.getGame(serverInstance.getUserGamePort(username)).getGame().getUsersList().get(username));
+        setCursor(Cursor.getDefaultCursor());
         frmUserInfo.setVisible(true);
     }
 
@@ -843,7 +896,7 @@ public class ManagerForm extends javax.swing.JFrame {
             setVisible(false);
             splash.setVisible(true);
             splash.requestFocus();
-            ManagerStarter.setCenter(splash);
+            Starter.setCenter(splash);
             saveGame();
             splash.setStatus("Closing connections...");
             serverInstance.shutDown();
@@ -869,7 +922,9 @@ public class ManagerForm extends javax.swing.JFrame {
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnShowDetails;
+    private javax.swing.JButton btnDebugConsole;
+    private javax.swing.JButton btnShowGameDetails;
+    private javax.swing.JButton btnShowUserDetails;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JLabel lblGameName;

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package celizationserver.core;
 
 import celization.CElization;
@@ -50,8 +46,8 @@ public class GameSession implements Serializable {
     private transient TurnTimeLimitTask turnTimeLimit;
     // Network data - should not be srialized
     protected boolean closeConnection;
-    transient protected HashMap<String, CELizationServerUserConnectionListener> onlineUsers;
-    transient protected CELizationServerListenerThread serverListenerThread;
+    transient protected HashMap<String, UserConnectionListener> onlineUsers;
+    transient protected ServerListenerThread serverListenerThread;
     transient protected ServerSocket serverListenerSocket;
     transient protected TurnManager turnManager;
 
@@ -67,7 +63,7 @@ public class GameSession implements Serializable {
     public void startListening(Integer port) throws IOException {
         serverListenerSocket = new ServerSocket(port.intValue());
         closeConnection = false;
-        serverListenerThread = new CELizationServerListenerThread(this);
+        serverListenerThread = new ServerListenerThread(this);
         serverListenerThread.start();
         listeningPort = serverListenerSocket.getLocalPort();
     }
@@ -117,7 +113,7 @@ public class GameSession implements Serializable {
 
     public void sendMessage(String from, String to, String message) throws IOException {
         if (to == null) {
-            for (CELizationServerUserConnectionListener user : onlineUsers.values()) {
+            for (UserConnectionListener user : onlineUsers.values()) {
                 user.sendChatMessage(from, message);
             }
         } else {
@@ -135,9 +131,9 @@ public class GameSession implements Serializable {
 
     protected void sendTurnClearancePacket() {
         ClearToSendNewTurnsAction clearance;
-        clearance = new ClearToSendNewTurnsAction();
         try {
-            for (CELizationServerUserConnectionListener userConnection : onlineUsers.values()) {
+            for (UserConnectionListener userConnection : onlineUsers.values()) {
+                clearance = new ClearToSendNewTurnsAction(game.getTurn());
                 userConnection.sendObject(clearance);
             }
         } catch (java.util.ConcurrentModificationException e) {
@@ -155,7 +151,7 @@ public class GameSession implements Serializable {
         turnTimeLimitTimer.schedule(turnTimeLimit, 0, 60 * 1000);
     }
 
-    public HashMap<String, CELizationServerUserConnectionListener> getOnlineUsers() {
+    public HashMap<String, UserConnectionListener> getOnlineUsers() {
         return onlineUsers;
     }
 

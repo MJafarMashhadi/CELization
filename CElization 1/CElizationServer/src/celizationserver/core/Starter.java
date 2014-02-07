@@ -1,6 +1,7 @@
 package celizationserver.core;
 
 import celizationrequests.CELizationRequest;
+import celizationserver.swing.FontsLoader;
 import celizationserver.swing.ManagerForm;
 import java.awt.Dimension;
 
@@ -9,27 +10,27 @@ import celizationserver.swing.SplashScreen;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InvalidClassException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-public class ManagerStarter {
+public class Starter {
 
     public static Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     private SplashScreen frmSplash;
     private ManagerForm frmManager;
     private CElizationServer server;
 
-    public ManagerStarter() {
+    public Starter() {
         /* Create and display the form */
+        frmSplash = new SplashScreen();
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                frmSplash = new SplashScreen();
                 frmSplash.setStatus("Starting Server...");
-                ManagerStarter.setCenter(frmSplash);
+                Starter.setCenter(frmSplash);
                 frmSplash.setVisible(true);
-                frmSplash.repaint();
                 frmSplash.requestFocus();
-
                 frmSplash.setStatus("Loading saved data");
             }
         });
@@ -61,12 +62,15 @@ public class ManagerStarter {
             server = new CElizationServer();
         }
 
+        frmSplash.setStatus("Loading fonts...");
+        new FontsLoader();
+        
         frmSplash.setStatus("Creating manager panel...");
         frmManager = new ManagerForm(server);
 
         frmSplash.setStatus("Completed");
 
-        ManagerStarter.setCenter(frmManager);
+        Starter.setCenter(frmManager);
 
         frmManager.refresh();
 
@@ -88,6 +92,6 @@ public class ManagerStarter {
             javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
         }
-        new ManagerStarter();
+        new Starter();
     }
 }

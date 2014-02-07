@@ -18,7 +18,7 @@ public class MapPreview extends javax.swing.JDialog {
     public MapPreview(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        Dimension screenSize = celizationserver.core.ManagerStarter.screenSize;
+        Dimension screenSize = celizationserver.core.Starter.screenSize;
         this.setLocation(screenSize.width - getWidth(), screenSize.height - getHeight());
     }
 

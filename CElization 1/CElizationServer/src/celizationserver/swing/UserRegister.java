@@ -9,7 +9,7 @@ import celization.GameState;
 import celization.NaturalResources;
 import celization.UserInfo;
 import celizationserver.core.CElizationServer;
-import celizationserver.core.ManagerStarter;
+import celizationserver.core.Starter;
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -44,7 +44,7 @@ public class UserRegister extends javax.swing.JDialog {
     public UserRegister(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        ManagerStarter.setCenter(this);
+        Starter.setCenter(this);
     }
 
     public void setGamesList(String[] list) {
