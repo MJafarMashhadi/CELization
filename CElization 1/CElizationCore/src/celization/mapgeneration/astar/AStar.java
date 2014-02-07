@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 public class AStar implements Serializable {
+    private static final long serialVersionUID = -5634398257674421675L;
 
     protected boolean map[][];
     protected boolean mapChanged = false;
@@ -60,7 +61,8 @@ public class AStar implements Serializable {
         if (pathFinders == null) {
             pathFinders = new LinkedList<>();
         }
-        pathFinders.addLast(new AStarCore(this, start.row, start.col, end.row, end.col));
+        AStarCore newFinder = new AStarCore(this, start.row, start.col, end.row, end.col);
+        pathFinders.addLast(newFinder);
         return pathFinders.size() - 1;
     }
 

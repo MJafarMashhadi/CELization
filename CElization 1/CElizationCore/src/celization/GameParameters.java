@@ -11,6 +11,7 @@ import java.io.Serializable;
  *
  */
 public final class GameParameters implements Serializable {
+    private static final long serialVersionUID = -2093932595623018453L;
     //
     public Boolean canGetTax = false;
     /// Science - Food - Wood - Gold - Stone

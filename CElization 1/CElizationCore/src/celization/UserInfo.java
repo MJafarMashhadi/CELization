@@ -10,6 +10,7 @@ import java.io.Serializable;
  *
  */
 public class UserInfo implements Serializable {
+    private static final long serialVersionUID = 6226988925934725296L;
 
     private String username;
     private GameState gameInstance;

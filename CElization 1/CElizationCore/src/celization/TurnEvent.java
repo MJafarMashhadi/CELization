@@ -15,6 +15,7 @@ public class TurnEvent implements Serializable {
     public static final int TRAINING_FINISHED = 5;
     public static final int HUNGER_DEATH = 6;
     public static final int WAR_DEATH = 7;
+    private static final long serialVersionUID = -1224124476283792290L;
     
     private int eventType;
     private String description;

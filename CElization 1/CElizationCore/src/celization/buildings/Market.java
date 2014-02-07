@@ -1,21 +1,13 @@
-/**
- *
- */
 package celization.buildings;
 
-import celizationrequests.GameObjectID;
 import celization.GameParameters;
-import static celization.buildings.Building.size;
+import celizationrequests.Coordinates;
 
 /**
  * @author mjafar
  *
  */
 public final class Market extends Building {
-
-    static {
-        size = GameParameters.marketSize;
-    }
 
     public Market() {
         super();
@@ -30,5 +22,10 @@ public final class Market extends Building {
 
     @Override
     public void step() {
+    }
+
+    @Override
+    public Coordinates getSize() {
+        return GameParameters.marketSize;
     }
 }

@@ -12,6 +12,7 @@ import java.io.Serializable;
  *
  */
 public class NaturalResources implements Serializable {
+    private static final long serialVersionUID = 3511305011444010194L;
 
     public int numberOfGolds;
     public int numberOfStones;

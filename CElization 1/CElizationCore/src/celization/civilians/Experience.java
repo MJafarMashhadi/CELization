@@ -3,6 +3,7 @@ package celization.civilians;
 import java.io.Serializable;
 
 public class Experience implements Serializable {
+    private static final long serialVersionUID = -2848295760994303541L;
 
     protected double amountOfExperience = 0;
     private int exercisesCount = 0;

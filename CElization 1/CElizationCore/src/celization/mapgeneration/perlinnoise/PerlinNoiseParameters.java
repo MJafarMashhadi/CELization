@@ -10,6 +10,7 @@ import java.util.logging.Logger;
  * @author mjafar
  */
 public class PerlinNoiseParameters implements Serializable {
+    private static final long serialVersionUID = -8141322736244857451L;
 
     public double persistence;
     public double frequency;

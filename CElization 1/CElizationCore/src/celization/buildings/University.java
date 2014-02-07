@@ -1,17 +1,14 @@
-/**
- *
- */
 package celization.buildings;
 
 import celizationrequests.GameObjectID;
 import celization.GameParameters;
 import celization.NaturalResources;
 import celization.TurnEvent;
-import static celization.buildings.Building.size;
 import celization.civilians.Scholar;
 import celization.exceptions.BuildingBusyException;
 import celization.exceptions.InsufficientResearchesException;
 import celization.exceptions.InsufficientResourcesException;
+import celizationrequests.Coordinates;
 
 /**
  * @author mjafar
@@ -21,9 +18,6 @@ public final class University extends Building {
 
     private GameObjectID studentBeingTrained;
 
-    static {
-        size = GameParameters.universitySize;
-    }
 
     /**
      *
@@ -102,5 +96,10 @@ public final class University extends Building {
                 gameInstance.addEvent(new TurnEvent(TurnEvent.RESEARCH_FINISHED, gameInstance.getCourseManager().getName(finishedReserchID)));
             }
         }
+    }
+
+    @Override
+    public Coordinates getSize() {
+        return GameParameters.universitySize;
     }
 }

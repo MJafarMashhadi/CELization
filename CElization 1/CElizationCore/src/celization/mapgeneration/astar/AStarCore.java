@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 
 public class AStarCore implements Serializable {
+    private static final long serialVersionUID = -1775332902510430911L;
 
     private AStar mapContainer;
     private Node start, end;
@@ -19,6 +20,7 @@ public class AStarCore implements Serializable {
         this.mapContainer = map;
         end = new Node(toRow, toCol, null, null);
         start = new Node(fromRow, fromCol, null, end);
+        findPath();
     }
 
     private void findPath() {

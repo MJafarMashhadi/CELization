@@ -15,6 +15,7 @@ import java.io.Serializable;
  *
  */
 public abstract class Civilian implements NeedsGameInstance, Serializable {
+    private static final long serialVersionUID = -503200656988436602L;
 
     protected String name;
     protected boolean alive;

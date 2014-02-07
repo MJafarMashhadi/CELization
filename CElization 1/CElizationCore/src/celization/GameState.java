@@ -44,9 +44,13 @@ import celization.mapgeneration.LandBlock;
 import celization.mapgeneration.astar.AStar;
 import celization.research.CourseManager;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameState implements Serializable {
 
+    private static final long serialVersionUID = 5157969333456186142L;
     private int turn;
     private GameParameters parameters;
     private AStar pathFinder;
@@ -397,8 +401,8 @@ public class GameState implements Serializable {
      */
     public void removeBuilding(Building buildingInstance) {
         Coordinates position = buildingInstance.getLocation();
-        for (int i = 0; i < buildingInstance.size.col; i++) {
-            for (int j = 0; j < buildingInstance.size.row; j++) {
+        for (int i = 0; i < buildingInstance.getSize().col; i++) {
+            for (int j = 0; j < buildingInstance.getSize().row; j++) {
                 pathFinder.unlockCell(i + position.col, j + position.row);
             }
         }
@@ -696,8 +700,8 @@ public class GameState implements Serializable {
         for (int r = -1; r <= GameParameters.headQuartersSize.row + 1; r++) {
             for (int c = -1; c <= GameParameters.headQuartersSize.col + 1; c++) {
                 try {
-                    if (gameInstance.getGameMap().isWalkable(c + hq.getLocation().col, r + hq.getLocation().row, username) 
-                        && !underBuilding(new Coordinates(c + hq.getLocation().col, r + hq.getLocation().row),hq.getLocation(),GameParameters.headQuartersSize)) {
+                    if (gameInstance.getGameMap().isWalkable(c + hq.getLocation().col, r + hq.getLocation().row, username)
+                            && !underBuilding(new Coordinates(c + hq.getLocation().col, r + hq.getLocation().row), hq.getLocation(), GameParameters.headQuartersSize)) {
                         found = true;
                         w.setLocation(new Coordinates(c + hq.getLocation().col, r + hq.getLocation().row));
                         Coordinates tl = w.getLocation().clone();
@@ -865,8 +869,8 @@ public class GameState implements Serializable {
         /**
          * mark blocks under this building as unavailable
          */
-        for (int i = 0; i < buildingInstance.size.col; i++) {
-            for (int j = 0; j < buildingInstance.size.row; j++) {
+        for (int i = 0; i < buildingInstance.getSize().col; i++) {
+            for (int j = 0; j < buildingInstance.getSize().row; j++) {
                 pathFinder.lockCell(i + position.col, j + position.row);
             }
         }
@@ -1073,8 +1077,9 @@ public class GameState implements Serializable {
     public boolean aroundBuilding(Coordinates point, Coordinates buildingLocation, Class buildingType) {
         Coordinates buildingSize;
         try {
-            buildingSize = (Coordinates) buildingType.getField("size").get(null);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            buildingSize = (Coordinates) buildingType.getMethod("getSize").invoke(buildingType.newInstance());
+        } catch (InstantiationException | NoSuchMethodException | SecurityException | IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
+            Logger.getLogger(GameState.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
         // Distance from one of building blocks is 1
@@ -1121,8 +1126,10 @@ public class GameState implements Serializable {
 
         Coordinates currentProcessedBlock = Coordinates.ZERO;
         try {
-            for (int i = 0; i < ((Coordinates) targetBuildingInstance.getField("size").get(null)).row; i++) {
-                for (int j = 0; j < ((Coordinates) targetBuildingInstance.getField("size").get(null)).col; j++) {
+            Coordinates size;
+            size = (Coordinates) targetBuildingInstance.getMethod("getSize").invoke(targetBuildingInstance.newInstance());
+            for (int i = 0; i < size.row; i++) {
+                for (int j = 0; j < size.col; j++) {
                     currentProcessedBlock.row = location.row + j;
                     currentProcessedBlock.col = location.col + i;
 
@@ -1131,8 +1138,11 @@ public class GameState implements Serializable {
                     }
                 }
             }
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
             // never happens
+            Logger.getLogger(GameState.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(GameState.class.getName()).log(Level.SEVERE, null, ex);
         }
         return true;
     }
@@ -1145,7 +1155,7 @@ public class GameState implements Serializable {
      */
     boolean underBuilding(Coordinates coordinates) {
         for (GameObjectID buildingID : buildings.keySet()) {
-            if (underBuilding(coordinates, buildings.get(buildingID).getLocation(), buildings.get(buildingID).size)) {
+            if (underBuilding(coordinates, buildings.get(buildingID).getLocation(), buildings.get(buildingID).getSize())) {
                 lastBuildingAffectedByUnderBuildingMethod = buildingID;
                 return true;
             }
@@ -1156,8 +1166,9 @@ public class GameState implements Serializable {
 
     public boolean underBuilding(Coordinates coordinats, Coordinates buildingLocation, Class buildingType) {
         try {
-            return underBuilding(buildingLocation, buildingLocation, (Coordinates) buildingType.getField("size").get(null));
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ex) {
+
+            return underBuilding(buildingLocation, buildingLocation, (Coordinates) buildingType.getMethod("getSize").invoke(buildingType.newInstance()));
+        } catch (InstantiationException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | SecurityException ex) {
             // never happens
             return false;
         }
@@ -1185,7 +1196,7 @@ public class GameState implements Serializable {
 //        }
 //
 //        return true;
-        
+
         return (buildingLocation.col <= coordinates.col && coordinates.col <= buildingLocation.col + size.col) && (buildingLocation.row <= coordinates.row && coordinates.row <= buildingLocation.row + size.row);
     }
 
@@ -1248,8 +1259,8 @@ public class GameState implements Serializable {
             derpInstance.growUp();
         }
         int diff = (GameParameters.workerUnlockArea.row - 1) / 2;
-        gameInstance.getGameMap().unlockCells(new Coordinates(derpPosition.col
-                - diff, derpPosition.row - diff),
+        gameInstance.getGameMap().unlockCells(
+                new Coordinates(derpPosition.col - diff, derpPosition.row - diff),
                 GameParameters.workerUnlockArea, username);
         numberOfAliveOnes = 1;
         civilians.put(derpID, derpInstance);

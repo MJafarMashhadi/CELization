@@ -42,8 +42,11 @@ import celizationrequests.turnaction.WorkerBuildTurnAction;
 import celizationrequests.turnaction.WorkerMoveTurnAction;
 import celizationrequests.turnaction.WorkerWorkTurnAction;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author mjafar
@@ -56,6 +59,7 @@ public class CElization implements Serializable {
      * number
      */
     public static Random rndMaker = new Random();
+    private static final long serialVersionUID = -6293307424520444520L;
     /**
      * Game States like number of people and equipment and...
      */
@@ -323,25 +327,25 @@ public class CElization implements Serializable {
                     boolean foundProperPlace = false;
                     Coordinates size;
                     try {
-                        size = (Coordinates) buildAction.getBuildingType().getField("size").get(null);
-                    } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ex) {
-                        // never happens
-                        return;
-                    }
-                    for (int r = -1; r <= size.row; r++) {
-                        for (int c = -1; c <= size.col; c++) {
-                            d.row = buildAction.getBuildingLocation().row + r;
-                            d.col = buildAction.getBuildingLocation().col + c;
-                            try {
-                                if (game.aroundBuilding(d, buildAction.getBuildingLocation(), buildAction.getBuildingType())
-                                        && gameMap.isWalkable(d, username)
-                                        && !game.underBuilding(d, buildAction.getBuildingLocation(), size)) {
-                                    foundProperPlace = true;
-                                    break;
+                        size = (Coordinates) targetType.getMethod("getSize").invoke(targetType.newInstance());
+
+                        for (int r = -1; r <= size.row; r++) {
+                            for (int c = -1; c <= size.col; c++) {
+                                d.row = buildAction.getBuildingLocation().row + r;
+                                d.col = buildAction.getBuildingLocation().col + c;
+                                try {
+                                    if (game.aroundBuilding(d, buildAction.getBuildingLocation(), buildAction.getBuildingType())
+                                            && gameMap.isWalkable(d, username)
+                                            && !game.underBuilding(d, buildAction.getBuildingLocation(), size)) {
+                                        foundProperPlace = true;
+                                        break;
+                                    }
+                                } catch (Exception e) {
                                 }
-                            } catch (Exception e) {
                             }
                         }
+                    } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | IllegalAccessException | InvocationTargetException | InstantiationException ex) {
+                        Logger.getLogger(CElization.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     if (foundProperPlace) {
                         w.addAction(new Move(d));
@@ -353,6 +357,7 @@ public class CElization implements Serializable {
             } else if (action instanceof WorkerMoveTurnAction) {
                 if (w.workState == CivilianState.Free) {
                     w.move(((WorkerMoveTurnAction) action).getDestination());
+                    System.out.println(w.getName());
                 } else {
                     // Client can't send such turn action
                     //throw new BuildingBusyException();

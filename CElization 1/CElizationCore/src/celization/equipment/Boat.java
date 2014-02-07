@@ -17,6 +17,7 @@ import java.io.Serializable;
  *
  */
 public final class Boat implements NeedsGameInstance, Serializable {
+    private static final long serialVersionUID = -4419378934128366957L;
 
     /**
      * Boat Position

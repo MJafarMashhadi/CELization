@@ -3,6 +3,7 @@ package celization.mapgeneration.perlinnoise;
 import java.io.Serializable;
 
 public class PerlinNoiseGenerator implements Serializable {
+    private static final long serialVersionUID = -7185609512998046490L;
 
     PerlinNoiseParameters parameters;
 

@@ -1,6 +1,3 @@
-/**
- *
- */
 package celization.research;
 
 import celizationrequests.GameObjectID;
@@ -14,6 +11,7 @@ import java.io.Serializable;
  *
  */
 public final class CourseManager implements Serializable {
+    private static final long serialVersionUID = -6817021624176643378L;
 
     private HashMap<String, GameObjectID> courseNameToID;
     private HashMap<GameObjectID, Course> courseList;

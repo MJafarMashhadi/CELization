@@ -1,10 +1,7 @@
-/**
- *
- */
 package celization.buildings.extractables;
 
 import celization.GameParameters;
-import static celization.buildings.Building.size;
+import celizationrequests.Coordinates;
 
 /**
  * @author mjafar
@@ -12,13 +9,14 @@ import static celization.buildings.Building.size;
  */
 public final class StoneMine extends Mine {
 
-    static {
-        size = GameParameters.stoneMineSize;
-    }
-
     public StoneMine() {
         super();
         requiredBuildingTime = GameParameters.stoneMineETA;
         requiredResources = GameParameters.stoneMineMaterial;
+    }
+
+    @Override
+    public Coordinates getSize() {
+        return GameParameters.stoneMineSize;
     }
 }

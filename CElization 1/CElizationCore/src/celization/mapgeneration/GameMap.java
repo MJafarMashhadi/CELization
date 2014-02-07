@@ -15,6 +15,7 @@ import java.util.HashMap;
  *
  */
 public class GameMap implements Serializable {
+    private static final long serialVersionUID = -1236552987782393122L;
 
     /**
      * map matrix
@@ -77,8 +78,8 @@ public class GameMap implements Serializable {
             topLefts.put(user, gameMapSize.clone());
             bottomRights.put(user, Coordinates.ZERO);
         }
-        for (int i = 0; i <= size.col; i++) {
-            for (int j = 0; j <= size.row; j++) {
+        for (int i = 0; i < size.col; i++) {
+            for (int j = 0; j < size.row; j++) {
                 try {
                     map[topLeft.col + i][topLeft.row + j].unLock(user);
                     gameInstance.getPathFinder(user).unlockCell(topLeft.col + i, topLeft.row + j);
@@ -200,7 +201,7 @@ public class GameMap implements Serializable {
                 /**
                  * make land block
                  */
-                map[i][j] = new LandBlock(type, height, gameInstance.getUsersList().keySet());
+                map[i][j] = new LandBlock(type, height);
             }
         }
 //        topLefts.put(username, gameMapSize.clone());

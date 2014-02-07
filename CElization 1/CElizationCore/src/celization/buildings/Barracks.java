@@ -1,14 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package celization.buildings;
 
 import celizationrequests.GameObjectID;
 import celization.GameParameters;
 import celization.TurnEvent;
-import static celization.buildings.Building.size;
 import celization.civilians.soldiers.Soldier;
+import celizationrequests.Coordinates;
 
 /**
  *
@@ -17,10 +13,6 @@ import celization.civilians.soldiers.Soldier;
 public class Barracks extends Building {
 
     private GameObjectID soldierBeingTrained;
-
-    static {
-        size = GameParameters.barracksSize;
-    }
 
     /**
      *
@@ -58,5 +50,10 @@ public class Barracks extends Building {
 
     public void startTraining(GameObjectID solider) {
         soldierBeingTrained = solider;
+    }
+
+    @Override
+    public Coordinates getSize() {
+        return GameParameters.barracksSize;
     }
 }

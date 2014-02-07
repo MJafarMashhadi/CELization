@@ -11,6 +11,7 @@ import java.io.Serializable;
  *
  */
 public class Course implements Serializable {
+    private static final long serialVersionUID = -2552615341664866406L;
 
     public String[] requiredCourses;
     public String[] enoughCourses;

@@ -1,13 +1,10 @@
-/**
- *
- */
 package celization.buildings;
 
 import celizationrequests.GameObjectID;
 import celization.GameParameters;
 import celization.TurnEvent;
-import static celization.buildings.Building.size;
 import celization.civilians.Worker;
+import celizationrequests.Coordinates;
 
 /**
  * @author mjafar
@@ -16,10 +13,6 @@ import celization.civilians.Worker;
 public final class HeadQuarters extends Building {
 
     private GameObjectID workerBeingTrained;
-
-    static {
-        size = GameParameters.headQuartersSize;
-    }
 
     /**
      *
@@ -53,5 +46,10 @@ public final class HeadQuarters extends Building {
             gameInstance.increaseAliveOnes();
             gameInstance.addEvent(new TurnEvent(TurnEvent.TRAINING_FINISHED, "Worker: " + w.getName()));
         }
+    }
+
+    @Override
+    public Coordinates getSize() {
+        return GameParameters.headQuartersSize;
     }
 }

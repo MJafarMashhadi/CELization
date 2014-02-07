@@ -1,6 +1,3 @@
-/**
- *
- */
 package celization.buildings.extractables;
 
 import celizationrequests.Coordinates;
@@ -23,7 +20,6 @@ public abstract class Mine extends Building implements Extractable, Serializable
         super();
         requiredBuildingTime = GameParameters.portETA;
         requiredResources = GameParameters.portMaterial;
-        size = GameParameters.portSize;
     }
 
     @Override
@@ -41,52 +37,52 @@ public abstract class Mine extends Building implements Extractable, Serializable
         for (GameObjectID name : this.occupiedWorkers) {
             w = gameInstance.getWorkerByUID(name);
             if (this instanceof Farm) {
-                for (int i = 0; i < size.col; i++) {
-                    for (int j = 0; j < size.row; j++) {
+                for (int i = 0; i < getSize().col; i++) {
+                    for (int j = 0; j < getSize().row; j++) {
                         amount += gameInstance.getMapBlock(new Coordinates(i + getLocation().col, j + getLocation().row)).
                                 getResources().numberOfFood;
                     }
                 }
-                amount /= size.row * size.col;
+                amount /= getSize().row * getSize().col;
 
                 amount *= gameInstance.getParams().minesExtractionRatioFOOD
                         * (1 + w.getExperience(GameParameters.ExpAgriculture));
                 w.extract(GameParameters.ExpAgriculture, amount);
             } else if (this instanceof StoneMine) {
-                for (int i = 0; i < size.col; i++) {
-                    for (int j = 0; j < size.row; j++) {
+                for (int i = 0; i < getSize().col; i++) {
+                    for (int j = 0; j < getSize().row; j++) {
                         amount += gameInstance.getMapBlock(
                                 new Coordinates(i + getLocation().col, j
                                 + getLocation().row)).getResources().numberOfStones;
                     }
                 }
-                amount /= size.row * size.col;
+                amount /= getSize().row * getSize().col;
 
                 amount *= gameInstance.getParams().minesExtractionRatioSTONE
                         * (1 + w.getExperience(GameParameters.ExpStoneMining));
                 w.extract(GameParameters.ExpStoneMining, amount);
             } else if (this instanceof GoldMine) {
-                for (int i = 0; i < size.col; i++) {
-                    for (int j = 0; j < size.row; j++) {
+                for (int i = 0; i < getSize().col; i++) {
+                    for (int j = 0; j < getSize().row; j++) {
                         amount += gameInstance.getMapBlock(
                                 new Coordinates(i + getLocation().col, j
                                 + getLocation().row)).getResources().numberOfGolds;
                     }
                 }
-                amount /= size.row * size.col;
+                amount /= getSize().row * getSize().col;
 
                 amount *= gameInstance.getParams().minesExtractionRatioGOLD
                         * (1 + w.getExperience(GameParameters.ExpGoldMining));
                 w.extract(GameParameters.ExpGoldMining, amount);
             } else if (this instanceof WoodCamp) {
-                for (int i = 0; i < size.col; i++) {
-                    for (int j = 0; j < size.row; j++) {
+                for (int i = 0; i < getSize().col; i++) {
+                    for (int j = 0; j < getSize().row; j++) {
                         amount += gameInstance.getMapBlock(
                                 new Coordinates(i + getLocation().col, j
                                 + getLocation().row)).getResources().numberOfWoods;
                     }
                 }
-                amount /= size.row * size.col;
+                amount /= getSize().row * getSize().col;
 
                 amount *= gameInstance.getParams().minesExtractionRatioWOOD
                         * (1 + w.getExperience(GameParameters.ExpCarpentary));

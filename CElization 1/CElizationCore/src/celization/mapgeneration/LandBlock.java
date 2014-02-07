@@ -1,12 +1,8 @@
-/**
- *
- */
 package celization.mapgeneration;
 
-import java.util.HashMap;
 import celization.NaturalResources;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.ArrayList;
 
 /**
  * @author mjafar
@@ -14,19 +10,14 @@ import java.util.Set;
  */
 public class LandBlock implements Serializable {
 
+    private static final long serialVersionUID = 7743183084564194210L;
     private BlockType blockType;
-    private HashMap<String, Boolean> locked;
+    private ArrayList<String> unlockedFor = new ArrayList<>();
     private NaturalResources availableResources;
     private double height;
 
-    public LandBlock(BlockType type, double height, Set<String> users) {
-        locked = new HashMap<>();
+    public LandBlock(BlockType type, double height) {
         blockType = type;
-
-        for (String username : users) {
-            locked.put(username, Boolean.TRUE);
-        }
-        
         int resourcesAmount;
         resourcesAmount = (int) Math.abs(10 * Math.sin(height));
 
@@ -43,7 +34,7 @@ public class LandBlock implements Serializable {
 
     public BlockType getType(boolean doNotShowLocked, String user) {
         if (doNotShowLocked) {
-            if (locked.get(user) == Boolean.FALSE) {
+            if (unlockedFor.contains(user)) {
                 return blockType;
             } else {
                 return BlockType.UNKNOWN;
@@ -57,8 +48,12 @@ public class LandBlock implements Serializable {
         return getType(true, user);
     }
 
+    public BlockType getType() {
+        return this.getType(false, null);
+    }
+
     public void unLock(String user) {
-        locked.put(user, Boolean.FALSE);
+        unlockedFor.add(user);
     }
 
     public void setResources(NaturalResources naturalResources) {
@@ -70,6 +65,8 @@ public class LandBlock implements Serializable {
     }
 
     void removeUser(String username) {
-        locked.remove(username);
+        if (unlockedFor.contains(username)) {
+            unlockedFor.remove(username);
+        }
     }
 }

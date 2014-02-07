@@ -25,7 +25,7 @@ import java.util.Iterator;
  */
 public abstract class Building implements NeedsGameInstance, Serializable {
 
-    public static Coordinates size;
+    private static final long serialVersionUID = -117249444872780945L;
     protected Coordinates location;
     public NaturalResources requiredResources;
     public ArrayList<GameObjectID> builderWorkers = new ArrayList<>(1);
@@ -34,6 +34,8 @@ public abstract class Building implements NeedsGameInstance, Serializable {
     protected double requiredBuildingTime;
     protected double buildingPhase;
 
+    public abstract Coordinates getSize();
+    
     @Override
     public void injectGameInstance(GameState state) {
         gameInstance = state;

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public final class Node implements Serializable {
+    private static final long serialVersionUID = 6416372973975732205L;
 
     private int row;
     private int col;

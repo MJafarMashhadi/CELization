@@ -104,7 +104,7 @@ public abstract class ActiveCivilians extends Civilian {
             actionsQueue.removeFirst();
             actionsQueue.addFirst(new Move(gameInstance.getPathFinder().newPathFinder(location, destination)));
         } else {
-            actionsQueue.add(new Move(destination));
+            this.actionsQueue.add(new Move(destination));
         }
         getNextMove();
     }

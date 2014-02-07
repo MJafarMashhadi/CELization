@@ -1,10 +1,7 @@
-/**
- *
- */
 package celization.buildings.extractables;
 
 import celization.GameParameters;
-import static celization.buildings.Building.size;
+import celizationrequests.Coordinates;
 
 /**
  * @author mjafar
@@ -12,14 +9,14 @@ import static celization.buildings.Building.size;
  */
 public final class GoldMine extends Mine {
 
-    static {
-        size = GameParameters.goldMineSize;
-    }
-
     public GoldMine() {
         super();
-        size = GameParameters.goldMineSize;
         requiredBuildingTime = GameParameters.goldMineETA;
         requiredResources = GameParameters.goldMineMaterial;
+    }
+
+    @Override
+    public Coordinates getSize() {
+        return GameParameters.goldMineSize;
     }
 }

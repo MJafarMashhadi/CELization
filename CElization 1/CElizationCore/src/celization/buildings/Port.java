@@ -1,13 +1,10 @@
-/**
- *
- */
 package celization.buildings;
 
 import celizationrequests.GameObjectID;
 import java.util.ArrayList;
 
 import celization.GameParameters;
-import static celization.buildings.Building.size;
+import celizationrequests.Coordinates;
 
 /**
  * @author mjafar
@@ -15,9 +12,6 @@ import static celization.buildings.Building.size;
  */
 public final class Port extends Building {
 
-    static {
-        size = GameParameters.portSize;
-    }
     ArrayList<GameObjectID> boats = new ArrayList<>();
 
     public Port() {
@@ -45,5 +39,10 @@ public final class Port extends Building {
         for (GameObjectID boatID : boats) {
             gameInstance.getBoatByUID(boatID).wander();
         }
+    }
+
+    @Override
+    public Coordinates getSize() {
+        return GameParameters.portSize;
     }
 }
