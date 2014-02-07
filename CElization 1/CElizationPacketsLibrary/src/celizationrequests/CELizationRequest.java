@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package celizationrequests;
 
 import java.io.Serializable;
@@ -12,5 +8,6 @@ import java.io.Serializable;
  */
 public abstract class CELizationRequest implements Serializable {
     public static final Integer gamesListListeningPort = new Integer(49123);
+    private static final long serialVersionUID = -219195356051385228L;
 
 }

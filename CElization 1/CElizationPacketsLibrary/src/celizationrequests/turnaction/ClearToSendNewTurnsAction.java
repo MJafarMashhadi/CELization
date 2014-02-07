@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package celizationrequests.turnaction;
 
 import celizationrequests.CELizationRequest;
@@ -12,4 +8,14 @@ import celizationrequests.CELizationRequest;
  */
 public class ClearToSendNewTurnsAction extends CELizationRequest {
     // Just it!
+    private int thisTurnNumber;
+
+    public ClearToSendNewTurnsAction(int thisTurnNumber) {
+        this.thisTurnNumber = thisTurnNumber;
+    }
+
+    public int getThisTurnNumber() {
+        return thisTurnNumber;
+    }
+    
 }

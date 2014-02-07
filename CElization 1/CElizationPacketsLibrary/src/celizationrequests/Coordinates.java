@@ -12,6 +12,7 @@ import java.io.Serializable;
 public class Coordinates implements Serializable {
 
     public static Coordinates ZERO = new Coordinates(0, 0);
+    private static final long serialVersionUID = 2896222035852738197L;
     public int col;
     public int row;
 

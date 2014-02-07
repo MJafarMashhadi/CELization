@@ -12,6 +12,7 @@ import java.util.Objects;
  * @author mjafar
  */
 public class GameObjectID implements Serializable {
+    private static final long serialVersionUID = -4405340076712620038L;
     private Class objectType;
     private int objectNumber;
 
