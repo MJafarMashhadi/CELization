@@ -5,7 +5,10 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +22,7 @@ public class ClientListenerThread extends Thread {
     private LinkedList<Object> responses;
     private ObjectInputStream inputStream = null;
     private boolean continueListening;
+    private ArrayList<ResponseListener> responseListeners = new ArrayList<>();
 
     public ClientListenerThread(Socket connection) {
         super("ClientListenerThread");
@@ -61,6 +65,14 @@ public class ClientListenerThread extends Thread {
         }
     }
 
+    public void addResponseListener(Runnable callback, Class type, boolean expires) {
+        responseListeners.add(new ResponseListener(callback, type, expires));
+    }
+    
+    public void addResponseListener(Runnable callback, Class type) {
+        responseListeners.add(new ResponseListener(callback, type));
+    }
+    
     @Override
     public void run() {
         try {
@@ -77,24 +89,34 @@ public class ClientListenerThread extends Thread {
             try {
                 responseObj = inputStream.readObject();
                 responses.addLast(responseObj);
-                // Interrupt Client for push notifications!
-                if (responseObj.getClass() == ClearToSendNewTurnsAction.class) {
-                    CElizationClient.getInstance().clearToSend();
-                    responses.removeLast();
+                // Manage listeners
+                ResponseListener listener;
+                for (ListIterator<ResponseListener> litr = responseListeners.listIterator(); litr.hasNext();) {
+                    listener = litr.next();
+                    if (listener.getType() == responseObj.getClass()) {
+                        listener.callback.run();
+                        if (listener.isExpires()) {
+                            litr.remove();
+                        }
+                    }
                 }
-            } catch (EOFException e) {
+            } catch (SocketException ex) {
+                Logger.getLogger(ClientListenerThread.class.getName()).log(Level.SEVERE, null, ex);
+                // FIXME: Happens when we close the game, i guess it should be debugged
             } catch (ClassNotFoundException ex) {
                 // Will not happen
             } catch (IOException ex) {
                 // Darn it! IOException again?!
+                Logger.getLogger(ClientListenerThread.class.getName()).log(Level.SEVERE, null, ex);
                 javax.swing.JOptionPane.showMessageDialog(null, "Couldn't read from network socket! That's odd!\n"
                         + "By the way you have lost some information maybe this turn's scene or maybe a chat message\n"
                         + "from a friend! but don't worry, your resources and buildings and other game states are stored in\n"
                         + "server and they're safe if server computer is safe.", "Darn it! IOException again?!",
                         javax.swing.JOptionPane.ERROR_MESSAGE);
-                Logger.getLogger(ClientListenerThread.class.getName()).log(Level.SEVERE, null, ex);
                 kill();
                 break;
+            } finally {
+                System.gc();
             }
         }
         try {
@@ -103,6 +125,35 @@ public class ClientListenerThread extends Thread {
             }
         } catch (IOException ex) {
             // Darn it! IOException again?!
+        }
+    }
+
+    class ResponseListener {
+
+        private boolean expires;
+        private Runnable callback;
+        private Class type;
+
+        public ResponseListener(Runnable callback, Class type, boolean expires) {
+            this.expires = expires;
+            this.callback = callback;
+            this.type = type;
+        }
+
+        public ResponseListener(Runnable callback, Class type) {
+            this(callback, type, true);
+        }
+
+        public boolean isExpires() {
+            return expires;
+        }
+
+        public Runnable getCallback() {
+            return callback;
+        }
+
+        public Class getType() {
+            return type;
         }
     }
 }

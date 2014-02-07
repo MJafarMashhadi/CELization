@@ -23,4 +23,11 @@ public class BuildingIcon extends GameIcon {
         boundID = id;
         boundUsername = username;
     }
+    
+    public void setIcon(Image icon) {
+        this.getChildren().remove(this.buildingIcon);
+        this.buildingIcon = new ImageView(icon);
+//        super(icon);
+        this.getChildren().add(buildingIcon);
+    }
 }

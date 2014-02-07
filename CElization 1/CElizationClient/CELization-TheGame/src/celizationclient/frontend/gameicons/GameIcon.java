@@ -62,8 +62,8 @@ public abstract class GameIcon extends Group {
 
         INCOMPLETE_BUILDINGS = new Image[4];
         INCOMPLETE_BUILDINGS[1] = new Image(GameIcon.class.getResourceAsStream("notCompleted1.png"));
-        INCOMPLETE_BUILDINGS[1] = new Image(GameIcon.class.getResourceAsStream("notCompleted2.png"));
-        INCOMPLETE_BUILDINGS[1] = new Image(GameIcon.class.getResourceAsStream("notCompleted3.png"));
+        INCOMPLETE_BUILDINGS[2] = new Image(GameIcon.class.getResourceAsStream("notCompleted2.png"));
+        INCOMPLETE_BUILDINGS[3] = new Image(GameIcon.class.getResourceAsStream("notCompleted3.png"));
 
         BLOCK_WIDTH = LandTile.PLAIN.getWidth();
         BLOCK_HEIGHT = LandTile.PLAIN.getHeight();

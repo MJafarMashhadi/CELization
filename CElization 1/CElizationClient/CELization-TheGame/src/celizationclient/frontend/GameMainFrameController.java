@@ -1,26 +1,24 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package celizationclient.frontend;
 
 import celization.TurnEvent;
 import celization.buildings.*;
 import celization.buildings.extractables.*;
 import celization.civilians.*;
-import celizationclient.backend.net.FetchChatMessages;
 import celizationclient.backend.net.NotReadyForNextTurnException;
 import celizationclient.frontend.gameicons.GameIcon;
+import celizationrequests.Coordinates;
 import celizationrequests.GameObjectID;
 import celizationrequests.turnaction.BuildingSellTurnAction;
 import celizationrequests.turnaction.BuildingTrainTurnAction;
 import celizationrequests.turnaction.MarketExchangeTurnAction;
 import celizationrequests.turnaction.UniversityResearchTurnAction;
+import celizationrequests.turnaction.WorkerBuildTurnAction;
+import celizationrequests.turnaction.WorkerMoveTurnAction;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,8 +67,26 @@ import javafx.util.Duration;
  *
  * @author mjafar
  */
-public class GameMainFrameController extends FormsParent implements Initializable {
+public final class GameMainFrameController extends FormsParent implements Initializable {
 
+    public enum State {
+
+        SELECT_UNIT_TO_COMMAND,
+        SELECT_ONE_CELL,
+        SELECT_TWO_CELLS,
+        SELECT_THREE_CELLS,
+        SELECT_UNIT_FOR_PARAMETER
+    }
+
+    public enum StateReason {
+
+        NONE,
+        MOVE,
+        BUILD
+    }
+    public State currentState = State.SELECT_UNIT_TO_COMMAND;
+    public StateReason stateReason = StateReason.NONE;
+    private Class buildingTargetClass;
     boolean clear = true;
     private InfoRefreshThread infoRefreshThread;
     @FXML
@@ -195,9 +211,12 @@ public class GameMainFrameController extends FormsParent implements Initializabl
     private celization.GameState currentGameState;
     // changes when clicking on objects
     protected GameObjectID activeObjectID;
-    
     private boolean shouldCenterDerp;
 
+    public GameMainFrameController() {
+        client.setMainFrameController(this);
+    }
+    
     /**
      * Initializes the controller class.
      */
@@ -233,13 +252,14 @@ public class GameMainFrameController extends FormsParent implements Initializabl
 //                }
             }
         });
-        
-        chatMessagesFetcherTimer = new java.util.Timer("Chat messages fetcher", true);
-        chatMessagesFetcherTimer.schedule(new FetchChatMessages(super.client, this), 0, 1000);
 
         infoRefreshThread = new InfoRefreshThread();
         shouldCenterDerp = true;
-        refreshInfo();
+        try {
+            client.requestGameStateUpdate();
+        } catch (IOException ex) {
+            Logger.getLogger(GameMainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @FXML
@@ -360,12 +380,12 @@ public class GameMainFrameController extends FormsParent implements Initializabl
 
     @Override
     public void clearToSend() {
-        refreshInfo();
         clear = true;
         btnNextTurn.setDisable(false);
     }
 
-    private void refreshInfo() {
+    @Override
+    public void refreshInfo() {
         Platform.runLater(infoRefreshThread);
     }
 
@@ -619,13 +639,13 @@ public class GameMainFrameController extends FormsParent implements Initializabl
             double vValue;
             hValue = derpLocation.col * GameIcon.BLOCK_WIDTH;
             hValue += mapPreviewPane.getWidth() / 2;
-            
+
             vValue = derpLocation.row * GameIcon.BLOCK_HEIGHT;
             vValue += mapPreviewPane.getHeight() / 2;
-            
+
             mapScrollPaneWrapper.setHvalue(hValue / mapPreviewPane.getWidth());
             mapScrollPaneWrapper.setVvalue(vValue / mapPreviewPane.getHeight());
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             return false;
         }
         return true;
@@ -798,12 +818,13 @@ public class GameMainFrameController extends FormsParent implements Initializabl
             CourseSelectionWindowController controller;
             controller = (CourseSelectionWindowController) loader.getController();
             controller.setCourseList(availableItems);
+            controller.setStage(selectResearch);
             selectResearch.setScene(new Scene(root));
             selectResearch.initModality(Modality.WINDOW_MODAL);
             selectResearch.initOwner(super.application.stage.getScene().getWindow());
             selectResearch.setResizable(false);
             selectResearch.showAndWait();
-            String researchName = controller.getResearchName();
+            String researchName = controller.getTypeName();
             if (researchName == null) {
                 return;
             }
@@ -816,28 +837,178 @@ public class GameMainFrameController extends FormsParent implements Initializabl
         }
     }
 
+    @FXML
+    private void btnMoveCivilianClick(ActionEvent event) {
+        currentState = State.SELECT_ONE_CELL;
+        stateReason = StateReason.MOVE;
+    }
+
+    @FXML
+    private void btnBuildBuildingClicked(ActionEvent event) {
+        try {
+            ArrayList<String> availableItems = new ArrayList<>();
+            if (!currentGameState.haveHeadQuarters()) {
+                availableItems.add("Head Quarters");
+            }
+            if (!currentGameState.haveUniversity() && currentGameState.checkResearches(University.class)) {
+                availableItems.add("University");
+            }
+            if (currentGameState.checkResearches(Farm.class)) {
+                availableItems.add("Farm");
+            }
+            if (currentGameState.checkResearches(Mine.class)) {
+                availableItems.add("Gold Mine");
+                availableItems.add("Stone Mine");
+            }
+            if (currentGameState.checkResearches(WoodCamp.class)) {
+                availableItems.add("Wood Camp");
+            }
+            if (currentGameState.checkResearches(Port.class)) {
+                availableItems.add("Port");
+            }
+            if (currentGameState.checkResearches(Market.class)) {
+                availableItems.add("Market");
+            }
+            if (currentGameState.checkResearches(Barracks.class)) {
+                availableItems.add("Barracks");
+            }
+            if (currentGameState.checkResearches(Stable.class)) {
+                availableItems.add("Stable");
+            }
+
+            Stage selectBuildingType = new Stage();
+            FXMLLoader loader;
+            loader = new FXMLLoader();
+            loader.setLocation(BuildingSelectionWindowController.class.getResource("BuildingSelectionWindow.fxml"));
+            Parent root = (Parent) loader.load(BuildingSelectionWindowController.class.getResourceAsStream("BuildingSelectionWindow.fxml"));
+
+            BuildingSelectionWindowController controller;
+            controller = (BuildingSelectionWindowController) loader.getController();
+            controller.setBuildingsList(availableItems);
+            controller.setStage(selectBuildingType);
+            selectBuildingType.setScene(new Scene(root));
+            selectBuildingType.initModality(Modality.WINDOW_MODAL);
+            selectBuildingType.initOwner(super.application.stage.getScene().getWindow());
+            selectBuildingType.setResizable(false);
+            selectBuildingType.showAndWait();
+
+            String buildingType = controller.getTypeName();
+            switch (buildingType) {
+                case "Head Quarters":
+                    buildingTargetClass = HeadQuarters.class;
+                    break;
+                case "University":
+                    buildingTargetClass = University.class;
+                    break;
+                case "Farm":
+                    buildingTargetClass = Farm.class;
+                    break;
+                case "Gold Mine":
+                    buildingTargetClass = GoldMine.class;
+                    break;
+                case "Stone Mine":
+                    buildingTargetClass = StoneMine.class;
+                    break;
+                case "Wood Camp":
+                    buildingTargetClass = WoodCamp.class;
+                    break;
+                case "Port":
+                    buildingTargetClass = Port.class;
+                    break;
+                case "Market":
+                    buildingTargetClass = Market.class;
+                    break;
+                case "Barracks":
+                    buildingTargetClass = Barracks.class;
+                    break;
+                case "Stable":
+                    buildingTargetClass = Stable.class;
+                    break;
+            }
+            try {
+                stateReason = StateReason.BUILD;
+                Coordinates size = (Coordinates) buildingTargetClass.getMethod("getSize").invoke(buildingTargetClass.newInstance());
+                switch (size.row) {
+                    case 1:
+                        currentState = State.SELECT_ONE_CELL;
+                        break;
+                    case 2:
+                        currentState = State.SELECT_TWO_CELLS;
+                        break;
+                    case 3:
+                        currentState = State.SELECT_THREE_CELLS;
+                        break;
+                    default:
+                        currentState = State.SELECT_THREE_CELLS;
+                        System.err.println("OW an unsupported size :D");
+                }
+            } catch (SecurityException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                // never happens
+                Logger.getLogger(GameMainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException ex) {
+        }
+    }
+
+    void selectedTile(final int col, final int row) {
+        Coordinates selectedBlock = new Coordinates(col, row);
+        if (stateReason == StateReason.MOVE) {
+            // Move a worker or soldier
+            final Civilian civilian = currentGameState.getCivilianByUID(activeObjectID);
+            client.addTurnAction(new WorkerMoveTurnAction(activeObjectID, selectedBlock));
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    lstTurnActions.getItems().add("Move civilian [" + civilian.getName() + "] to [" + col + ", " + row + "]");
+                }
+            });
+            stateReason = StateReason.NONE;
+            currentState = State.SELECT_UNIT_TO_COMMAND;
+        } else if (stateReason == StateReason.BUILD) {
+            if (currentGameState.canBuildThere(selectedBlock, buildingTargetClass)) {
+                client.addTurnAction(new WorkerBuildTurnAction(activeObjectID, selectedBlock, buildingTargetClass));
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        lstTurnActions.getItems().add("Build " + buildingTargetClass.getSimpleName() + " by " + currentGameState.getCivilianByUID(activeObjectID).getName());
+                    }
+                });
+                stateReason = StateReason.NONE;
+                currentState = State.SELECT_UNIT_TO_COMMAND;
+            } else {
+                System.err.println("Cannot build there");
+            }
+        }
+        // TODO: Complete it
+    }
+
     private class InfoRefreshThread implements Runnable {
 
         @Override
         public void run() {
+            System.out.println("Refresh thread runned...");
             try {
                 currentGameState = client.getGameState();
+                System.out.printf(" Recieved game state ( turn = %d)\n", currentGameState.getTurnNumber());
             } catch (IOException ex) {
-                Logger.getLogger(GameMainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(InfoRefreshThread.class.getName()).log(Level.SEVERE, null, ex);
                 javax.swing.JOptionPane.showMessageDialog(null, "Couldn't get new game map from server!\n" + ex.getMessage(), "Map not available!", javax.swing.JOptionPane.ERROR_MESSAGE);
             }
             // refresh looks and data
+            System.out.println(" Refreshing UI");
             refreshMessagesCounter();
             refreshResourcesPage();
             checkResearches();
+            
             mapPreviewPane.updateMap(currentGameState, client.getUsername(), client);
             /*
-            if (shouldCenterDerp) {
-                if (centerDerpOnMap()) {
-                    shouldCenterDerp = false; // So this code runs only once
-                }
-            }
-            */
+             if (shouldCenterDerp) {
+             if (centerDerpOnMap()) {
+             shouldCenterDerp = false; // So this code runs only once
+             }
+             }
+             */
+            System.out.println("Refresh thread's work is finished.");
         }
     }
 }

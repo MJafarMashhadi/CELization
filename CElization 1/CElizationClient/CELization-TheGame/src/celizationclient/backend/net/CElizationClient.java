@@ -7,13 +7,16 @@ package celizationclient.backend.net;
 import celization.GameState;
 import celization.TurnEvent;
 import celizationclient.frontend.FormsParent;
+import celizationclient.frontend.GameMainFrameController;
 import celizationrequests.CELizationRequest;
 import celizationrequests.authentication.AuthenticationReportPacket;
 import celizationrequests.authentication.AuthenticationRequest;
 import celizationrequests.authentication.LogoutPacket;
+import celizationrequests.chat.ChatErrorPacket;
 import celizationrequests.chat.ChatMessagePacket;
 import celizationrequests.information.GetGamesRequestPacket;
 import celizationrequests.information.GetGamesResponsePacket;
+import celizationrequests.turnaction.ClearToSendNewTurnsAction;
 import celizationrequests.turnaction.TurnAction;
 import celizationrequests.turnaction.TurnActionsRequest;
 import celizationrequests.turnaction.TurnEvents;
@@ -21,6 +24,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,14 +49,15 @@ public class CElizationClient {
     private GameState currentGameState;
     private boolean gameStateUpdated;
     //
-    private FormsParent formsParent;
+    private GameMainFrameController mainFrameController;
 
     /**
      * Setter for forms parent
-     * @param formsParent
+     *
+     * @param mainFrameController
      */
-    public void setFormsParent(FormsParent formsParent) {
-        this.formsParent = formsParent;
+    public void setMainFrameController(GameMainFrameController mainFrameController) {
+        this.mainFrameController = mainFrameController;
     }
 
     /**
@@ -72,9 +77,11 @@ public class CElizationClient {
      * push notification meaning that we're able to send new turn actions
      */
     protected void clearToSend() {
-        clearToSendNextTurnActions = true;
-        gameStateUpdated = true;
-        formsParent.clearToSend();
+        if (mainFrameController != null) {
+            clearToSendNextTurnActions = true;
+            gameStateUpdated = true;
+            mainFrameController.clearToSend();
+        }
     }
 
     /**
@@ -103,6 +110,87 @@ public class CElizationClient {
         } catch (IOException ex) {
             Logger.getLogger(CElizationClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        listenerThread.addResponseListener(new Runnable() {
+            @Override
+            public void run() {
+                int oldTurnNumber;
+                if (currentGameState == null) {
+                    oldTurnNumber = -1;
+                } else {
+                    oldTurnNumber = currentGameState.getTurnNumber();
+                }
+                currentGameState = (GameState) listenerThread.getResponse(GameState.class);
+                gameStateUpdated = false;
+                if (oldTurnNumber < currentGameState.getTurnNumber()) {
+                    mainFrameController.refreshInfo();
+                } else {
+                    System.err.printf("An old game state(%d <= %d) was recieved with no reason.\n", currentGameState.getTurnNumber(), oldTurnNumber);
+                }
+            }
+        }, GameState.class, false);
+
+        listenerThread.addResponseListener(new Runnable() {
+            @Override
+            public void run() {
+                ClearToSendNewTurnsAction clearance = (ClearToSendNewTurnsAction) listenerThread.getResponse(ClearToSendNewTurnsAction.class);
+                System.out.println("Got clearance for turn " + clearance.getThisTurnNumber());
+                if (currentGameState == null || (currentGameState != null && currentGameState.getTurnNumber() < clearance.getThisTurnNumber())) {
+                    try {
+                        requestGameStateUpdate();
+                    } catch (IOException ex) {
+                        Logger.getLogger(CElizationClient.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                clearToSend();
+            }
+        }, ClearToSendNewTurnsAction.class, false);
+
+        listenerThread.addResponseListener(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<TurnEvent> events = (ArrayList<TurnEvent>) ((TurnEvents) listenerThread.getResponse(TurnEvents.class)).getEvents();
+                mainFrameController.setTurnEvents(events);
+            }
+        }, TurnEvents.class, false);
+
+        listenerThread.addResponseListener(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<String> usersList = null;
+                try {
+                    usersList = getOnlineUsers();
+                } catch (SocketException ex) {
+                    Logger.getLogger(CElizationClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(CElizationClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (usersList != null) {
+                    mainFrameController.setOnlineList(usersList);
+                } else {
+                    System.err.println("usersList == null. This should not happen! because it's a listener not a random polling mode checker.");
+                }
+            }
+        }, celizationrequests.chat.OnlineListResponse.class, false);
+
+        listenerThread.addResponseListener(new Runnable() {
+            @Override
+            public void run() {
+                ChatMessagePacket messagePacket = (ChatMessagePacket) listenerThread.getResponse(ChatMessagePacket.class);
+                mainFrameController.newMessage(messagePacket.getSender(), messagePacket.getMessage());
+                mainFrameController.refreshMessagesCounter();
+            }
+        }, ChatMessagePacket.class, false);
+
+        listenerThread.addResponseListener(new Runnable() {
+            @Override
+            public void run() {
+                ChatErrorPacket error;
+                error = (ChatErrorPacket) listenerThread.getResponse(ChatErrorPacket.class);
+                mainFrameController.userWentOffline(error.getUsername());
+                mainFrameController.refreshMessagesCounter();
+            }
+        }, ChatErrorPacket.class, false);
     }
 
     public void logout() {
@@ -116,7 +204,7 @@ public class CElizationClient {
             Platform.exit();
         }
     }
-    
+
     public boolean login(String username, String password) throws IOException {
         Object response;
         this.username = username;
@@ -142,44 +230,14 @@ public class CElizationClient {
      * @return
      */
     public celization.GameState getGameState() throws IOException {
-        if (gameStateUpdated || currentGameState == null) {
-            sendRequest(new celizationrequests.information.GetInformationPacket());
-            int t = 0;
-        while (!listenerThread.hasResponse(GameState.class)) {
-            t++;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                System.out.println("Wagh Wagh");
-            }
-            if (t > 100) {
-                throw new IOException("Timeout");
-            }
-        }
-            currentGameState = (GameState) listenerThread.getResponse(GameState.class);
-            gameStateUpdated = false;
-        }
         return currentGameState;
     }
 
+    public void requestGameStateUpdate() throws IOException {
+        sendRequest(new celizationrequests.information.GetInformationPacket());
+    }
+
     public ArrayList<String> getOnlineUsers() throws IOException {
-        // FIXME: server sends online lists withput a requests, change from polling mode to event-driven mode
-        if (!listenerThread.hasResponse(celizationrequests.chat.OnlineListResponse.class)) {
-            return null;
-        }
-        //sendRequest(new celizationrequests.chat.OnlineListRequest());
-        int t = 0;
-        while (!listenerThread.hasResponse(celizationrequests.chat.OnlineListResponse.class)) {
-            t++;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                System.out.println("Wagh Wagh");
-            }
-            if (t > 100) {
-                throw new IOException("Timeout");
-            }
-        }
         return ((celizationrequests.chat.OnlineListResponse) listenerThread.getResponse(celizationrequests.chat.OnlineListResponse.class)).getList();
     }
 
@@ -193,20 +251,6 @@ public class CElizationClient {
         }
         clearToSendNextTurnActions = false;
         sendRequest(turnRequest);
-        int t = 0;
-        while (!listenerThread.hasResponse(TurnEvents.class)) {
-            t++;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                System.out.println("Wagh Wagh");
-            }
-            if (t > 100) {
-                throw new IOException("Timeout");
-            }
-        }
-        ArrayList<TurnEvent> events = (ArrayList<TurnEvent>)((TurnEvents) listenerThread.getResponse(TurnEvents.class)).getEvents();
-        formsParent.setTurnEvents(events);
     }
 
     /**
@@ -215,7 +259,7 @@ public class CElizationClient {
      * @param request
      */
     private void sendRequest(CELizationRequest request) throws IOException {
-        outputStream.writeObject(request);
+        outputStream.writeUnshared(request);
         outputStream.flush();
     }
 
@@ -261,7 +305,7 @@ public class CElizationClient {
             objectInputStream = new ObjectInputStream(gamesListRetrieverConnection.getInputStream());
 
             try {
-                objectOutputStream.writeObject(request);
+                objectOutputStream.writeUnshared(request);
                 objectOutputStream.flush();
                 response = objectInputStream.readObject();
 

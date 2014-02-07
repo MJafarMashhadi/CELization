@@ -48,9 +48,9 @@
                   <children>
                     <HBox id="HBox" alignment="CENTER" layoutX="85.0" layoutY="31.0" spacing="5.0">
                       <children>
-                        <Button fx:id="btnWorkerMove" mnemonicParsing="false" text="Move" />
+                        <Button fx:id="btnWorkerMove" mnemonicParsing="false" onAction="#btnMoveCivilianClick" text="Move" />
                         <Button fx:id="btnWorkerWork" mnemonicParsing="false" text="Work" />
-                        <Button fx:id="btnWorkerBuild" mnemonicParsing="false" text="Build" />
+                        <Button fx:id="btnWorkerBuild" mnemonicParsing="false" onAction="#btnBuildBuildingClicked" text="Build" />
                       </children>
                     </HBox>
                   </children>
@@ -63,7 +63,7 @@
                   <children>
                     <HBox id="HBox" alignment="CENTER" layoutX="113.0" layoutY="31.0" spacing="5.0">
                       <children>
-                        <Button fx:id="btnSoldierMove" mnemonicParsing="false" text="move" />
+                        <Button fx:id="btnSoldierMove" mnemonicParsing="false" onAction="#btnMoveCivilianClick" text="move" />
                         <Button fx:id="btnSoldierFight" mnemonicParsing="false" text="fight" />
                       </children>
                     </HBox>

@@ -1,33 +1,37 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package celizationclient.frontend;
 
 import celization.mapgeneration.BlockType;
 import celizationclient.frontend.gameicons.GameIcon;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.TextBuilder;
 
 /**
  *
  * @author mjafar
  */
-public class LandTile extends StackPane {
+public final class LandTile extends StackPane {
 
     public static final Image PLAIN = new Image(GameIcon.class.getResourceAsStream("PlainTile.png"));
     public static final Image WATER = new Image(GameIcon.class.getResourceAsStream("WaterTile.png"));
     public static final Image MOUNTAIN = new Image(GameIcon.class.getResourceAsStream("Mountain.png"));
     public static final Image JUNGLE = new Image(GameIcon.class.getResourceAsStream("GrassTile.png"));
     public static final Image BLACK = new Image(GameIcon.class.getResourceAsStream("BlackTile.png"));
-    BlockType type;
-    ImageView backImage;
+    
+    private BlockType type;
+    private ImageView backImage;
+    private int row;
+    private int col;
 
-    public BlockType getType() {
-        return type;
+    public LandTile(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
+
+    public LandTile(BlockType type, int row, int col) {
+        setType(type);
+        this.row = row;
+        this.col = col;
     }
 
     public void setType(BlockType type) {
@@ -54,4 +58,22 @@ public class LandTile extends StackPane {
             this.getChildren().add(new ImageView(LandTile.MOUNTAIN));
         }
     }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public BlockType getType() {
+        return type;
+    }
+
+    public ImageView getBackImage() {
+        return backImage;
+    }
+    
+    
 }

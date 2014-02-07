@@ -16,15 +16,15 @@ import javafx.stage.Stage;
  *
  * @author mjafar
  */
-public class CourseSelectionWindowController implements Initializable {
+public class BuildingSelectionWindowController implements Initializable {
 
     @FXML
-    private ChoiceBox lstAvailableCourses;
+    private ChoiceBox lstAvailableTypes;
     @FXML
     private Button btnOk;
-    
-    private Stage stage;
 
+    private Stage stage;
+    
     /**
      * Initializes the controller class.
      */
@@ -32,18 +32,18 @@ public class CourseSelectionWindowController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
     }
 
-    protected void setCourseList(final ArrayList<String> items) {
+    protected void setBuildingsList(final ArrayList<String> items) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                lstAvailableCourses.getItems().addAll(items);
+                lstAvailableTypes.getItems().addAll(items);
                 btnOk.setDisable(false);
             }
         });
     }
 
     protected String getTypeName() {
-        return (String) lstAvailableCourses.getSelectionModel().getSelectedItem();
+        return (String) lstAvailableTypes.getSelectionModel().getSelectedItem();
     }
     
     @FXML
@@ -51,9 +51,7 @@ public class CourseSelectionWindowController implements Initializable {
         stage.close();
     }
 
-    public void setStage(Stage stage) {
+    void setStage(Stage stage) {
         this.stage = stage;
     }
-    
-    
 }

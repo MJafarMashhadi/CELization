@@ -13,12 +13,12 @@ import java.util.ArrayList;
  * @author mjafar
  */
 public abstract class FormsParent {
+
     protected CElizationClient client;
     protected CELizationClientRunner application;
 
     public FormsParent() {
         client = CElizationClient.getInstance();
-        client.setFormsParent(this);
     }
 
     protected void loginSuccess() {
@@ -31,7 +31,10 @@ public abstract class FormsParent {
 
     public void clearToSend() {
     }
-    
-    public void setTurnEvents(ArrayList<TurnEvent> events){
+
+    public void setTurnEvents(ArrayList<TurnEvent> events) {
+    }
+
+    public void refreshInfo() {
     }
 }
